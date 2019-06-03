@@ -1,2 +1,1 @@
 # N-puzzle
-N-puzzle 
