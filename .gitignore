@@ -8,3 +8,7 @@ settings.gradle
 
 .vscode
 .idea
+.classpath
+.project
+org.eclipse*
+bin
