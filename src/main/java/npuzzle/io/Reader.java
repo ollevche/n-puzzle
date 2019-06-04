@@ -1,17 +1,16 @@
 package npuzzle.io;
 
+import npuzzle.utils.Utils;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author dpozinen
@@ -24,6 +23,7 @@ public class Reader {
 
 	private String fullFileName;
 	private List<Integer> tiles;
+	private boolean isNSet;
 
 	public Reader() {
 	}
@@ -43,6 +43,7 @@ public class Reader {
 			} else {
 				linesList = readFromConsole();
 			}
+			tiles.forEach(System.out::println);
 			return linesList;
 		} catch (IOException | RuntimeException e) {
 //			System.err.println(e.getMessage());
@@ -72,27 +73,44 @@ public class Reader {
 			validateLine(s);
 	}
 
-	private void validateLine(String s) {
-		if (s.isEmpty())
+	private void validateLine(String line) {
+		if (line.isEmpty())
 			throw new RuntimeException("Invalid Input: empty line");
 
-		Arrays.stream(s.split("\\s+")).forEach(e -> {
-			if (!e.startsWith("#") && !e.matches("\\d+"))
-				throw new RuntimeException("Invalid Input for String: <" + e + ">");
+		List<String> elements = Arrays.asList(line.split("\\s+"));
+		elements = getPartsBeforeComment(elements);
+
+		elements.forEach(s -> {
+			if (!s.matches("\\d+"))
+				throw new RuntimeException("Invalid Input for String: <" + s + ">");
 		});
 
-		Predicate<String> predicateIsComment = st -> !st.startsWith("#");
-		List<String> elements = Arrays.stream(s.split("\\s+"))
-										.filter(predicateIsComment)
-										.collect(Collectors.toList());
+		List<Integer> intValues = elements.stream().map(Integer::valueOf).collect(Collectors.toList());
 
-		for (String element : elements) {
-			Integer i = Integer.parseInt(element);
+		if (!isNSet && intValues.size() == 1) {
+			Utils.setN(intValues.get(0));
+			isNSet = true;
+			return;
+		}
+
+		for (Integer i : intValues) {
 			if (tiles.contains(i))
 				throw new RuntimeException("Duplicate values for number: <" + i + ">");
 			tiles.add(i);
 		}
 	}
 
+	private List<String> getPartsBeforeComment(List<String> elements) {
+		List<String> beforeComment = new ArrayList<>();
+		boolean isComment = false;
+
+		for (String element : elements) {
+			if (element.startsWith("#"))
+				isComment = true;
+			if (!isComment)
+				beforeComment.add(element);
+		}
+		return beforeComment;
+	}
 
 }
