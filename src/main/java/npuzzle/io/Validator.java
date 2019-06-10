@@ -4,6 +4,7 @@ import npuzzle.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,7 +13,7 @@ public class Validator
 	private boolean isNSet;
 	private List<Integer> tiles;
 
-	public Validator(List<Integer> tiles){
+	Validator(List<Integer> tiles){
 		this.tiles = tiles;
 	}
 
@@ -21,7 +22,7 @@ public class Validator
 			validateLine(s);
 	}
 
-	public void validateLine(String line) {
+	void validateLine(String line) {
 		if (line.isEmpty())
 			throw new RuntimeException("Invalid Input: empty line");
 
@@ -34,18 +35,18 @@ public class Validator
 
 		List<Integer> intValues = getIntValues(elements);
 
-		trySetN(intValues);
+		if (trySetN(intValues))
+			return;
+
 		checkMaxSizeAndValue(intValues);
 		checkDuplicates(intValues);
+		checkDuplicates(tiles);
+		tiles.addAll(intValues);
 	}
 
-	// TODO: rewrite check to check intValues, not tiles
 	private void checkDuplicates(List<Integer> intValues) {
-		for (Integer i : intValues) {
-			if (tiles.contains(i))
-				throw new RuntimeException("Duplicate values for number: <" + i + ">");
-			tiles.add(i);
-		}
+		if (!intValues.stream().allMatch(new HashSet<Integer>()::add))
+			throw new RuntimeException("Duplicate values.");
 	}
 
 	private void checkMaxSizeAndValue(List<Integer> intValues) {
@@ -56,16 +57,18 @@ public class Validator
 			throw new RuntimeException("Invalid Input: wrong number of tiles");
 	}
 
-	private void trySetN(List<Integer> intValues) {
+	private boolean trySetN(List<Integer> intValues) {
 		if (!isNSet) {
 			if ( intValues.size() == 1 )
 			{
 				Utils.setN(intValues.get(0));
 				isNSet = true;
+				return true;
 			}
 			else
 				throw new RuntimeException("Invalid Input: Size not provided");
 		}
+		return false;
 	}
 
 	private List<String> splitLineAndRemoveComments(String line) {
