@@ -2,10 +2,7 @@ package npuzzle.io;
 
 import npuzzle.utils.Utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Validator
@@ -98,5 +95,10 @@ public class Validator
 				beforeComment.add(element);
 		}
 		return beforeComment;
+	}
+
+	void checkEnoughTiles() {
+		if (!(tiles.size() == Math.pow(Utils.getN(), 2)))
+			throw new RuntimeException("Not enough Tiles");
 	}
 }

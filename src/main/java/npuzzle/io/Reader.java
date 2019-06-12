@@ -49,6 +49,7 @@ public class Reader {
 			while ((line = br.readLine()) != null)
 				validator.validateLine(line);
 		}
+		validator.checkEnoughTiles();
 	}
 
 	@Deprecated
