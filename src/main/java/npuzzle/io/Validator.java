@@ -1,5 +1,7 @@
 package npuzzle.io;
 
+import npuzzle.utils.Error;
+import npuzzle.utils.InvalidInputException;
 import npuzzle.utils.Utils;
 
 import java.util.*;
@@ -21,7 +23,7 @@ public class Validator
 
 	void validateLine(String line) {
 		if (line.isEmpty())
-			throw new RuntimeException("Invalid Input: empty line");
+			throw new InvalidInputException(Error.EMPTY);
 
 		List<String> elements = splitLineAndRemoveComments(line);
 
@@ -43,15 +45,15 @@ public class Validator
 
 	private void checkDuplicates(List<Integer> intValues) {
 		if (!intValues.stream().allMatch(new HashSet<Integer>()::add))
-			throw new RuntimeException("Duplicate values.");
+			throw new InvalidInputException(Error.DUPLICATES);
 	}
 
 	private void checkMaxSizeAndValue(List<Integer> intValues) {
 		if (intValues.stream().anyMatch(i -> i > (Utils.getN() * Utils.getN()) - 1))
-			throw new RuntimeException("Invalid Input: tile has value over max allowed");
+			throw new InvalidInputException(Error.OVER_MAX);
 
 		if (intValues.size() != Utils.getN())
-			throw new RuntimeException("Invalid Input: wrong number of tiles");
+			throw new InvalidInputException(Error.WRONG_AMOUNT);
 	}
 
 	private boolean trySetN(List<Integer> intValues) {
@@ -63,7 +65,7 @@ public class Validator
 				return true;
 			}
 			else
-				throw new RuntimeException("Invalid Input: Size not provided");
+				throw new InvalidInputException(Error.NO_SIZE);
 		}
 		return false;
 	}
@@ -80,7 +82,7 @@ public class Validator
 	private void checkNonNumeric(List<String> elements) {
 		elements.forEach(s -> {
 			if (!s.matches("\\d+"))
-				throw new RuntimeException("Invalid Input for String: <" + s + ">");
+				throw new InvalidInputException(Error.NON_NUMERIC, s);
 		});
 	}
 
@@ -98,7 +100,9 @@ public class Validator
 	}
 
 	void checkEnoughTiles() {
-		if (!(tiles.size() == Math.pow(Utils.getN(), 2)))
-			throw new RuntimeException("Not enough Tiles");
+		int diff = (int) Math.pow(Utils.getN(), 2) - tiles.size();
+
+		if (tiles.size() != Math.pow(Utils.getN(), 2))
+			throw new InvalidInputException(Error.NOT_ENOUGH_TILES, String.valueOf(diff));
 	}
 }
