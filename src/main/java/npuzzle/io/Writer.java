@@ -9,9 +9,8 @@ import java.util.List;
 /**
  * @author dpozinen
  * @author ollevche
- *
+ * <p>
  * used to write program output
- *
  */
 
 public class Writer {
@@ -25,8 +24,7 @@ public class Writer {
 			rows.append(String.format("%5s", String.valueOf(tile)));
 			if (++col < Utils.getN()) {
 				rows.append(" ");
-			}
-			else {
+			} else {
 				rows.append("\n");
 				col = 0;
 			}
@@ -43,8 +41,7 @@ public class Writer {
 
 		for (State state : states) {
 			write(state);
-			if (--i > 0)
-			{
+			if (--i > 0) {
 				System.out.println(String.format(format, "|"));
 				System.out.println(String.format(format, "|"));
 				System.out.println(String.format(arrowFormat, "\\ /"));

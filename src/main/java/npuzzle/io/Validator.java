@@ -4,15 +4,17 @@ import npuzzle.utils.Error;
 import npuzzle.utils.InvalidInputException;
 import npuzzle.utils.Utils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.stream.Collectors;
 
-public class Validator
-{
+public class Validator {
 	private boolean isNSet;
 	private List<Integer> tiles;
 
-	Validator(List<Integer> tiles){
+	Validator(List<Integer> tiles) {
 		this.tiles = tiles;
 	}
 
@@ -58,13 +60,11 @@ public class Validator
 
 	private boolean trySetN(List<Integer> intValues) {
 		if (!isNSet) {
-			if ( intValues.size() == 1 )
-			{
+			if (intValues.size() == 1) {
 				Utils.setN(intValues.get(0));
 				isNSet = true;
 				return true;
-			}
-			else
+			} else
 				throw new InvalidInputException(Error.NO_SIZE);
 		}
 		return false;

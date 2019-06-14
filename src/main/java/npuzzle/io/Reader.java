@@ -7,11 +7,11 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author dpozinen
- * @author ollevche
  * <p>
  * used to read program input
  */
@@ -27,7 +27,7 @@ public class Reader {
 	public State read() {
 		try {
 			readInput();
-			return createStartingState();
+			return new State(tiles);
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
 //			e.printStackTrace();
@@ -55,9 +55,5 @@ public class Reader {
 	@Deprecated
 	private List<String> readFromFile() throws IOException {
 		return Files.readAllLines(Paths.get(fullFileName), StandardCharsets.UTF_8);
-	}
-
-	private State createStartingState() {
-		return new State(tiles);
 	}
 }
