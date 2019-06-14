@@ -67,7 +67,7 @@ public class Reader {
 			Utils.setMode(Modes.ASTAR);
 			return;
 		}
-
+//		TODO:fix possible path problems from lowercasing all the args
 		argList.replaceAll(String::toLowerCase);
 		setMode(argList);
 		setFile(argList);
