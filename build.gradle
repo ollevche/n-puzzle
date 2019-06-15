@@ -26,7 +26,18 @@ dependencies {
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
+
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-collections4
+    compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.3'
+
 }
 
 // Define the main class for the application
 mainClassName = 'npuzzle.App'
+// Application Args
+run {
+    args = [ 'file(C:\\Users\\Dariy\\Documents\\Code\\N-puzzle\\src\\main\\resources\\testInput.txt)' ]
+}
