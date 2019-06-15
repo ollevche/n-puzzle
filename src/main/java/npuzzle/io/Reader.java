@@ -36,7 +36,7 @@ public class Reader {
 			readInput();
 			return new State(tiles);
 		} catch (IOException e) {
-			e.printStackTrace(System.err);
+			System.err.println(e.getMessage());
 		}
 		return null;
 	}

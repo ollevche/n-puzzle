@@ -55,7 +55,7 @@ public class Validator {
 			throw new InvalidInputException(Error.OVER_MAX);
 
 		if (intValues.size() != Utils.getN())
-			throw new InvalidInputException(Error.WRONG_AMOUNT);
+			throw new InvalidInputException(Error.WRONG_AMOUNT, String.valueOf(Utils.getN() - intValues.size()));
 	}
 
 	private boolean trySetN(List<Integer> intValues) {

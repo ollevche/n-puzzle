@@ -9,7 +9,11 @@ import java.util.List;
 
 public class App {
 	public static void main(String[] args) {
-		State startingState = new Reader("C:\\Users\\User\\Desktop\\Code\\Reports\\STATE.txt").read();
+		Reader reader = new Reader();
+//				new Reader("C:\\Users\\User\\Desktop\\Code\\Reports\\STATE.txt");
+		reader.readArgs(args);
+		State startingState = reader.read();
+
 		List<State> states = new ArrayList<>();
 		states.add(startingState);
 
