@@ -4,7 +4,6 @@ package npuzzle.io;
 import npuzzle.logic.State;
 import npuzzle.utils.Modes;
 import npuzzle.utils.Utils;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
@@ -13,7 +12,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -67,25 +65,21 @@ public class Reader {
 			Utils.setMode(Modes.ASTAR);
 			return;
 		}
-//		TODO:fix possible path problems from lowercasing all the args
-		argList.replaceAll(String::toLowerCase);
-		setMode(argList);
-		setFile(argList);
-	}
 
-	private void setFile(List<String> argList) {
 		for (String s : argList) {
 			if (s.startsWith("file"))
 				fullFileName = StringUtils.substringBetween(s, "(", ")");
+			if (s.startsWith("mode"))
+				setMode(StringUtils.substringBetween(s, "(", ")"));
 		}
 	}
 
-	private void setMode(List<String> argList) {
-		if (argList.contains(Modes.GREEDY))
+	private void setMode(String modes) {
+		if (StringUtils.containsIgnoreCase(modes, Modes.GREEDY))
 			Utils.setMode(Modes.GREEDY);
-		else if (argList.contains(Modes.ASTAR))
+		else if (StringUtils.containsIgnoreCase(modes, Modes.ASTAR))
 			Utils.setMode(Modes.ASTAR);
-		else if (argList.contains(Modes.UNIFORM))
+		else if (StringUtils.containsIgnoreCase(modes, Modes.UNIFORM))
 			Utils.setMode(Modes.UNIFORM);
 	}
 
