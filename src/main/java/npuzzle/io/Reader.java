@@ -2,7 +2,7 @@ package npuzzle.io;
 
 
 import npuzzle.logic.State;
-import npuzzle.utils.Modes;
+import npuzzle.utils.Constants;
 import npuzzle.utils.Utils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -62,7 +62,7 @@ public class Reader {
 		List<String> argList = Arrays.asList(args);
 
 		if (argList.isEmpty()) {
-			Utils.setMode(Modes.ASTAR);
+			Utils.setMode(Constants.ASTAR);
 			return;
 		}
 
@@ -75,12 +75,12 @@ public class Reader {
 	}
 
 	private void setMode(String modes) {
-		if (StringUtils.containsIgnoreCase(modes, Modes.GREEDY))
-			Utils.setMode(Modes.GREEDY);
-		else if (StringUtils.containsIgnoreCase(modes, Modes.ASTAR))
-			Utils.setMode(Modes.ASTAR);
-		else if (StringUtils.containsIgnoreCase(modes, Modes.UNIFORM))
-			Utils.setMode(Modes.UNIFORM);
+		if (StringUtils.containsIgnoreCase(modes, Constants.GREEDY))
+			Utils.setMode(Constants.GREEDY);
+		else if (StringUtils.containsIgnoreCase(modes, Constants.ASTAR))
+			Utils.setMode(Constants.ASTAR);
+		else if (StringUtils.containsIgnoreCase(modes, Constants.UNIFORM))
+			Utils.setMode(Constants.UNIFORM);
 	}
 
 	@Deprecated

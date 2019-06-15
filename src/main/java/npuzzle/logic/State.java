@@ -1,6 +1,6 @@
 package npuzzle.logic;
 
-import npuzzle.utils.Contstants;
+import npuzzle.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,14 +21,14 @@ public class State implements Comparable<State>
 		this.tiles = tiles;
 	}
 
-//	TODO: these modes should be replaced by 3 heuristic functions. Contstants should determine steps higher
+//	TODO: these modes should be replaced by 3 heuristic functions. Constants should determine steps higher
 	public int evaluate() {
 		switch (mode) {
-			case Contstants.MANHATTAN :
+			case Constants.MANHATTAN :
 				return Evaluator.evaluateManhattan();
-			case Contstants.GREEDY :
+			case Constants.GREEDY :
 				return Evaluator.evaluateGreedy();
-			case Contstants.UNIFORM :
+			case Constants.UNIFORM :
 				return Evaluator.evaluateUniform();
 		}
 		return 0;

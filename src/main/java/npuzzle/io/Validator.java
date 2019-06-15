@@ -102,7 +102,7 @@ public class Validator {
 	void checkEnoughTiles() {
 		int diff = (int) Math.pow(Utils.getN(), 2) - tiles.size();
 
-		if (tiles.size() != Math.pow(Utils.getN(), 2))
+		if (diff != 0)
 			throw new InvalidInputException(Error.NOT_ENOUGH_TILES, String.valueOf(diff));
 	}
 }
