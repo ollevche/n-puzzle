@@ -1,7 +1,11 @@
 package npuzzle.utils;
 
+// TODO: replace/remove this class
+
 public class Utils {
-	private Utils(){}
+
+	private Utils() {
+	}
 
 	private static int n;
 
@@ -22,4 +26,5 @@ public class Utils {
 	public static void setMode(String mode) {
 		Utils.mode = mode;
 	}
+
 }

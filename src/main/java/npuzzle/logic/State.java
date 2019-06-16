@@ -5,28 +5,28 @@ import npuzzle.utils.Constants;
 import java.util.ArrayList;
 import java.util.List;
 
-public class State implements Comparable<State> {
-	private String mode;
-	private List<Integer> tiles;
-	private final Evaluator.EvaluateInterface evaluator;
+// TODO: create Executor with 'mode' and 'n' fields
 
-	public State(String mode) {
-		this.mode = mode;
-		evaluator = Evaluator.getInterface(mode);
+public class State implements Comparable<State> {
+
+	private List<Integer> tiles;
+	private final Evaluator.Heuristic evaluator;
+
+	public State(String heuristic) {
+		evaluator = Evaluator.getHeuristic(heuristic);
 	}
 
 	public State(List<Integer> tiles) {
-		this(Constants.ASTAR);
+		this(Constants.MANHATTAN);
 		this.tiles = tiles;
 	}
 
 	public State(State other) {
-		this.mode = other.mode;
 		this.evaluator = other.evaluator;
 		this.tiles = new ArrayList<>(other.tiles);
 	}
 
-	public int evaluate() {
+	public int evaluate() { // TODO: cache this
 		return evaluator.evaluate(this);
 	}
 
@@ -42,4 +42,5 @@ public class State implements Comparable<State> {
 	public void setTiles(List<Integer> tiles) {
 		this.tiles = tiles;
 	}
+
 }

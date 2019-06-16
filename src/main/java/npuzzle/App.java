@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class App {
+
+	// TODO: proper main() function
+
 	public static void main(String[] args) {
 		Reader reader = new Reader();
 //				new Reader("C:\\Users\\User\\Desktop\\Code\\Reports\\STATE.txt");
@@ -21,4 +24,5 @@ public class App {
 			states.add(new State(startingState));
 		new Writer().write(states);
 	}
+
 }

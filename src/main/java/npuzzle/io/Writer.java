@@ -3,7 +3,6 @@ package npuzzle.io;
 import npuzzle.logic.State;
 import npuzzle.utils.Utils;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -19,7 +18,6 @@ public class Writer {
 		StringBuilder rows = new StringBuilder();
 		int col = 0;
 
-		Collections.sort(state.getTiles());
 		for (Integer tile : state.getTiles()) {
 			rows.append(String.format("%5s", String.valueOf(tile)));
 			if (++col < Utils.getN()) {
@@ -48,4 +46,5 @@ public class Writer {
 			}
 		}
 	}
+
 }

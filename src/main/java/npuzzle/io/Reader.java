@@ -1,6 +1,5 @@
 package npuzzle.io;
 
-
 import npuzzle.logic.State;
 import npuzzle.utils.Constants;
 import npuzzle.utils.Utils;
@@ -21,6 +20,7 @@ import java.util.List;
  */
 
 public class Reader {
+
 	private String fullFileName;
 	private List<Integer> tiles = new ArrayList<>();
 
@@ -87,4 +87,5 @@ public class Reader {
 	private List<String> readFromFile() throws IOException {
 		return Files.readAllLines(Paths.get(fullFileName), StandardCharsets.UTF_8);
 	}
+
 }

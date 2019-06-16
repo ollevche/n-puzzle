@@ -1,6 +1,7 @@
 package npuzzle.utils;
 
 public class InvalidInputException extends RuntimeException {
+
 	public InvalidInputException(Error err) {
 		super(err.getErrorMsg());
 	}

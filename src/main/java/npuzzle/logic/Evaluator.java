@@ -5,33 +5,36 @@ import npuzzle.utils.Constants;
 //	TODO: these modes should be replaced by 3 heuristic functions. Constants should determine steps higher
 public class Evaluator {
 
-	public static int evaluateManhattan(State state) {
-		return state.getTiles().size();
-	}
-
-	public static int evaluateGreedy(State state) {
+	private static int manhattan(State state) {
 		return 0;
 	}
 
-	public static int evaluateUniform(State state) {
+	private static int greedy(State state) {
+		return 0;
+	}
+
+	private static int uniform(State state) {
 		return 0;
 	}
 
 	@FunctionalInterface
-	public interface EvaluateInterface{
+	public interface Heuristic {
+
 		int evaluate(State state);
+
 	}
 
-	public static EvaluateInterface getInterface(String s) {
+	public static Heuristic getHeuristic(String s) {
 		switch (s) {
-			case Constants.MANHATTAN :
-				return Evaluator::evaluateManhattan;
-			case Constants.GREEDY :
-				return Evaluator::evaluateGreedy;
-			case Constants.UNIFORM :
-				return Evaluator::evaluateUniform;
+			case Constants.MANHATTAN:
+				return Evaluator::manhattan;
+			case Constants.GREEDY:
+				return Evaluator::greedy;
+			case Constants.UNIFORM:
+				return Evaluator::uniform;
+			default:
+				return null;
 		}
-		return null;
 	}
 
 }

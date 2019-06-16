@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Validator {
+
 	private boolean isNSet;
 	private List<Integer> tiles;
 
@@ -52,7 +53,7 @@ public class Validator {
 
 	private void checkMaxSizeAndValue(List<Integer> intValues) {
 		if (intValues.stream().anyMatch(i -> i > (Utils.getN() * Utils.getN()) - 1))
-			throw new InvalidInputException(Error.OVER_MAX);
+			throw new InvalidInputException(Error.OVER_MAX); // TODO: fix 3\n 012 -> 0 1 2
 
 		if (intValues.size() != Utils.getN())
 			throw new InvalidInputException(Error.WRONG_AMOUNT, String.valueOf(Utils.getN() - intValues.size()));
@@ -105,4 +106,5 @@ public class Validator {
 		if (diff != 0)
 			throw new InvalidInputException(Error.NOT_ENOUGH_TILES, String.valueOf(diff));
 	}
+
 }
