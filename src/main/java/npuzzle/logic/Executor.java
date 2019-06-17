@@ -29,7 +29,7 @@ public class Executor {
 			closedSet.add(current.toString());
 			children = current.createChildren();
 			children.keySet().removeAll(closedSet);
-			current = children.lastEntry().getValue();
+			current = children.firstEntry().getValue();
 		}
 
 		return current.createHierarchy();
