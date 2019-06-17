@@ -14,7 +14,7 @@ import java.util.List;
 
 public class Writer {
 
-	public void write(State state) {
+	public static void write(State state) {
 		StringBuilder rows = new StringBuilder();
 		int col = 0;
 
@@ -31,7 +31,7 @@ public class Writer {
 	}
 
 	// TODO: count proper offset
-	public void write(List<State> states) {
+	public static void write(List<State> states) {
 		int i = states.size();
 		int offset = 15;
 		String format = "%" + offset + "s";
