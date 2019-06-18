@@ -1,6 +1,7 @@
 package npuzzle.logic;
 
 import npuzzle.utils.Constants;
+import npuzzle.utils.StateMap;
 
 import java.util.*;
 
@@ -11,7 +12,7 @@ public class Executor {
 		List<State> execute(State startingState);
 	}
 
-	public static List<State> executeGreedy(State initial) {
+	private static List<State> executeGreedy(State initial) {
 
 		// 1. create closed set
 		// 2. current = starting
@@ -23,7 +24,7 @@ public class Executor {
 
 		Set<String> closedSet = new TreeSet<>();
 		State current = initial;
-		TreeMap<String, State> children;
+		StateMap children;
 
 		while (!current.isFinal()) {
 			closedSet.add(current.toString());
@@ -35,15 +36,15 @@ public class Executor {
 		return current.createHierarchy();
 	}
 
-	public static List<State> executeAstar(State startingState) {
+	private static List<State> executeAstar(State startingState) {
 		return Collections.emptyList();
 	}
 
-	public static List<State> executeUniform(State startingState) {
+	private static List<State> executeUniform(State startingState) {
 		return Collections.emptyList();
 	}
 
-	public static Algorithm getAlgorithm(String algorithm) {
+	static Algorithm getAlgorithm(String algorithm) {
 		switch (algorithm) {
 			case Constants.ASTAR:
 				return Executor::executeAstar;

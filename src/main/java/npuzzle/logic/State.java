@@ -2,6 +2,7 @@ package npuzzle.logic;
 
 import com.google.common.collect.Comparators;
 import npuzzle.utils.Constants;
+import npuzzle.utils.StateMap;
 import npuzzle.utils.Utils;
 
 import java.util.*;
@@ -30,13 +31,53 @@ public class State implements Comparable<State> {
 		this.parent = other;
 	}
 
-	public int evaluate() { // TODO: cache this
+//	TODO: cache this <- where and how?
+	int evaluate() {
 		return evaluator.evaluate(this);
 	}
 
-	@Override
-	public int compareTo(State o) {
-		return evaluate() - o.evaluate();
+	List<State> createHierarchy() {
+		if (isRoot())
+			return new LinkedList<>();
+
+		List<State> hierarchy = parent.createHierarchy();
+
+		hierarchy.add(this);
+		return hierarchy;
+	}
+
+//	TODO: test. Was never tested
+	StateMap createChildren() {
+		StateMap children = new StateMap();
+		int indexOfEmpty = tiles.indexOf(0);
+
+		if (indexOfEmpty / Utils.getN() != 0) // UP
+			children.put(createChild(indexOfEmpty, indexOfEmpty - Utils.getN()));
+		if (indexOfEmpty / Utils.getN() != Utils.getN() - 1) // DOWN
+			children.put(createChild(indexOfEmpty, indexOfEmpty + Utils.getN()));
+		if (indexOfEmpty % Utils.getN() != 0) // LEFT
+			children.put(createChild(indexOfEmpty, indexOfEmpty - 1));
+		if (indexOfEmpty % Utils.getN() != Utils.getN() - 1) // RIGHT
+			children.put(createChild(indexOfEmpty, indexOfEmpty + 1));
+
+		return children;
+	}
+
+	private Map.Entry<String, State> createChild(int i, int j) {
+		State child = new State(this);
+
+		child.tiles.set(i, child.tiles.get(j));
+		child.tiles.set(j, 0);
+		return new AbstractMap.SimpleEntry<>(child.toString(), child);
+	}
+
+	@SuppressWarnings("UnstableApiUsage")
+	boolean isFinal() {
+		return Comparators.isInOrder(tiles, Comparator.naturalOrder());
+	}
+
+	private boolean isRoot() {
+		return parent == null;
 	}
 
 	public List<Integer> getTiles() {
@@ -48,6 +89,11 @@ public class State implements Comparable<State> {
 	}
 
 	@Override
+	public int compareTo(State o) {
+		return evaluate() - o.evaluate();
+	}
+
+	@Override
 	public String toString() {
 		return tiles.toString();
 	}
@@ -55,62 +101,4 @@ public class State implements Comparable<State> {
 	public int size() {
 		return tiles.size();
 	}
-
-	public boolean isFinal() {
-		return Comparators.isInOrder(tiles, Comparator.naturalOrder());
-	}
-
-	public boolean isRoot() {
-		return parent == null;
-	}
-
-	public List<State> createHierarchy() {
-		if (isRoot())
-			return new LinkedList<>();
-
-		List<State> hierarchy = parent.createHierarchy();
-
-		hierarchy.add(this);
-		return hierarchy;
-	}
-
-	// TODO: this
-	public TreeMap<String, State> createChildren() {
-		TreeMap<String, State> children = new TreeMap<>();
-		int indexOfEmpty = tiles.indexOf(0);
-		List<Integer> tilesCopy = new ArrayList<>(tiles);
-
-		if (indexOfEmpty / Utils.getN() != 0) { // UP
-//			children.put(createChild(indexOfEmpty, indexOfEmpty - Utils.getN())); // если будет свой меп
-			/*tilesCopy.set(indexOfEmpty, tilesCopy.get(indexOfEmpty - Utils.getN()));
-			tilesCopy.set(indexOfEmpty - Utils.getN(), 0);*/
-		}
-		if (indexOfEmpty / Utils.getN() != Utils.getN() - 1) { // DOWN
-//			State s = createChild(indexOfEmpty, indexOfEmpty - Utils.getN());
-//			children.put(s.getTiles().toString(), s);
-			/*tilesCopy.set(indexOfEmpty, tilesCopy.get(indexOfEmpty + Utils.getN()));
-			tilesCopy.set(indexOfEmpty + Utils.getN(), 0);*/
-		}
-		if (indexOfEmpty % Utils.getN() != 0) { // LEFT
-			Map.Entry<String, State> child = createChild(indexOfEmpty, indexOfEmpty - Utils.getN());
-			children.put(child.getKey(), child.getValue());
-			/*tilesCopy.set(indexOfEmpty, tilesCopy.get(indexOfEmpty + Utils.getN()));
-			tilesCopy.set(indexOfEmpty + Utils.getN(), 0);*/
-		}
-		if (indexOfEmpty % Utils.getN() != Utils.getN() - 1) { // RIGHT
-			tilesCopy.set(indexOfEmpty, tilesCopy.get(indexOfEmpty + Utils.getN()));
-			tilesCopy.set(indexOfEmpty + Utils.getN(), 0);
-		}
-
-		return children;
-	}
-
-	private Map.Entry<String, State> createChild(int i, int j) {
-		State child = new State(this);
-
-		child.tiles.set(i, child.tiles.get(j));
-		child.tiles.set(j, 0);
-		return new AbstractMap.SimpleEntry<>(child.tiles.toString(), child);
-	}
-
 }
