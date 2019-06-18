@@ -2,6 +2,7 @@ package npuzzle.utils;
 
 // TODO: replace/remove this class
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,10 +31,12 @@ public class Utils {
 		Utils.mode = mode;
 	}
 
-	public static void generateRandom(List<Integer> tiles, int n) {
+	public static List<Integer> generateRandom(int n) {
+		List<Integer> tiles = new ArrayList<>(n);
 		while (--n >= 0)
 			tiles.add(n);
 		Collections.shuffle(tiles);
+		return tiles;
 	}
 
 }
