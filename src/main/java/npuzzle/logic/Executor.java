@@ -1,27 +1,39 @@
 package npuzzle.logic;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
 import npuzzle.utils.Constants;
 import npuzzle.utils.StateMap;
-
-import java.util.*;
 
 public class Executor {
 
 	@FunctionalInterface
 	public interface Algorithm {
-		List<State> execute(State startingState);
+		/**
+		 *
+		 * @param initial - the Starting/Initial State from input
+		 * @return all parents chained together -> form a list of all moves made to achieve the final state
+		 */
+		List<State> execute(State initial);
 	}
 
+	/**
+	 * Flow:
+	 * 1. create closed set
+	 * 2. current = initial
+	 * 3. while current != final
+	 * 4. add current to closed set
+	 * 5. get StateMap with possible moves state.createChildren()
+	 * 6. remove children which are in closed set
+	 * 7. if no children left -> break
+	 * 7. current = best child
+	 *
+	 * @see Algorithm#execute(State)
+	 */
 	private static List<State> executeGreedy(State initial) {
-
-		// 1. create closed set
-		// 2. current = starting
-		// 3. while current != final
-		// 4. add current to closed set
-		// 5. get TreeMap<String, State> with possible moves state.createChildren()
-		// 6. remove children which are in closed set
-		// 7. current = best child
-
 		Set<String> closedSet = new TreeSet<>();
 		State current = initial;
 		StateMap children;
@@ -30,17 +42,19 @@ public class Executor {
 			closedSet.add(current.toString());
 			children = current.createChildren();
 			children.keySet().removeAll(closedSet);
+			if (children.isEmpty())
+				break;
 			current = children.firstEntry().getValue();
 		}
 
 		return current.createHierarchy();
 	}
 
-	private static List<State> executeAstar(State startingState) {
+	private static List<State> executeAstar(State initial) {
 		return Collections.emptyList();
 	}
 
-	private static List<State> executeUniform(State startingState) {
+	private static List<State> executeUniform(State initial) {
 		return Collections.emptyList();
 	}
 
