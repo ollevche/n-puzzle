@@ -1,14 +1,15 @@
 package npuzzle.logic;
 
+import java.util.*;
+
 import com.google.common.collect.Comparators;
+
 import npuzzle.utils.Constants;
 import npuzzle.utils.StateMap;
 import npuzzle.utils.Utils;
 
-import java.util.*;
-
 // TODO: create Executor with 'mode' and 'n' fields
-
+// TODO: Solve the empty tile 0 or 9 problem.
 public class State implements Comparable<State> {
 
 	private List<Integer> tiles;

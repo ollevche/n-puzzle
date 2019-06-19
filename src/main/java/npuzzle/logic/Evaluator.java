@@ -1,17 +1,35 @@
 package npuzzle.logic;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import javafx.util.Pair;
 import npuzzle.utils.Constants;
+import npuzzle.utils.Utils;
 
 //	TODO: these modes should be replaced by 3 heuristic functions. Constants should determine steps higher
 public class Evaluator {
+
+	private static final List<Pair<Integer, Integer>> xyList = createReferenceList();
 
 	@FunctionalInterface
 	public interface Heuristic {
 		int evaluate(State state);
 	}
 
+//	TODO: Test.
 	private static int manhattan(State state) {
-		return 0;
+		List<Integer> tiles = state.getTiles();
+		int x, y, n = Utils.getN();
+		int stateEval = 0;
+
+		for (Integer i : tiles) {
+			x = i % n;
+			y = i / n;
+			stateEval += Math.abs(x - xyList.get(i).getKey()) + Math.abs(y - xyList.get(i).getValue()) ;
+		}
+		return stateEval;
 	}
 
 	private static int greedy(State state) {
@@ -35,4 +53,21 @@ public class Evaluator {
 		}
 	}
 
+	private static List<Pair<Integer, Integer>> createReferenceList() {
+		List<Pair<Integer, Integer>> xyList = new ArrayList<>();
+		int nByN = Utils.getN() * Utils.getN();
+		int n = Utils.getN();
+		int x = 0, y = 0, i = 0;
+
+		while (i < nByN) {
+			while (x < n) {
+				xyList.add(new Pair<>(x, y));
+				x++;
+			}
+			i += x;
+			x = 0;
+			y++;
+		}
+		return Collections.unmodifiableList(xyList);
+	}
 }
