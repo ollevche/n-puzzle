@@ -50,8 +50,26 @@ public class Executor {
 		return current.createHierarchy();
 	}
 
+//	TODO: add g(x)
+//	TODO: test
 	private static List<State> executeAstar(State initial) {
-		return Collections.emptyList();
+		Set<String> closedSet = new TreeSet<>();
+		StateMap openSet = new StateMap();
+		State current = initial;
+		StateMap children;
+
+		while (!current.isFinal()) {
+			closedSet.add(current.toString());
+			openSet.remove(current.toString());
+			children = current.createChildren();
+			children.keySet().removeAll(closedSet);
+			openSet.putAll(children);
+			if (openSet.isEmpty())
+				break;
+			current = openSet.firstEntry().getValue();
+		}
+
+		return current.createHierarchy();
 	}
 
 	private static List<State> executeUniform(State initial) {
