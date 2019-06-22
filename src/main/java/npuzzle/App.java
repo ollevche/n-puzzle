@@ -1,11 +1,8 @@
 package npuzzle;
 
 import npuzzle.io.Reader;
-import npuzzle.io.Writer;
-import npuzzle.logic.State;
-
-import java.util.ArrayList;
-import java.util.List;
+import npuzzle.logic.Npuzzle;
+import npuzzle.utils.Constants;
 
 public class App {
 
@@ -15,14 +12,9 @@ public class App {
 		Reader reader = new Reader();
 //				new Reader("C:\\Users\\User\\Desktop\\Code\\Reports\\STATE.txt");
 		reader.readArgs(args);
-		State startingState = reader.read();
 
-		List<State> states = new ArrayList<>();
-		states.add(startingState);
+		new Npuzzle(Constants.GREEDY, reader.read()).execute();
 
-		for (int i = 0; i < 10; i++)
-			states.add(new State(startingState));
-		new Writer().write(states);
 	}
 
 }

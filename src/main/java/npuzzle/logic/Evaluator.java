@@ -1,12 +1,13 @@
 package npuzzle.logic;
 
+import npuzzle.utils.Constants;
+import npuzzle.utils.Utils;
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import javafx.util.Pair;
-import npuzzle.utils.Constants;
-import npuzzle.utils.Utils;
 
 //	TODO: these modes should be replaced by 3 heuristic functions. Constants should determine steps higher
 public class Evaluator {
@@ -61,7 +62,7 @@ public class Evaluator {
 
 		while (i < nByN) {
 			while (x < n) {
-				xyList.add(new Pair<>(x, y));
+				xyList.add(new MutablePair<>(x, y));
 				x++;
 			}
 			i += x;

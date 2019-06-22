@@ -1,18 +1,18 @@
 package npuzzle.logic;
 
-import java.util.*;
-
 import com.google.common.collect.Comparators;
-
 import npuzzle.utils.Constants;
 import npuzzle.utils.StateMap;
 import npuzzle.utils.Utils;
+
+import java.util.*;
 
 // TODO: create Executor with 'mode' and 'n' fields
 // TODO: Solve the empty tile 0 or 9 problem.
 public class State implements Comparable<State> {
 
 	private List<Integer> tiles;
+	private int indexOfEmpty;
 	private final Evaluator.Heuristic evaluator;
 	private final State parent;
 
@@ -23,12 +23,12 @@ public class State implements Comparable<State> {
 
 	public State(List<Integer> tiles) {
 		this(Constants.MANHATTAN);
-		this.tiles = tiles;
+		setTiles(tiles);
 	}
 
 	public State(State other) {
 		this.evaluator = other.evaluator;
-		this.tiles = new ArrayList<>(other.tiles);
+		setTiles(new ArrayList<>(other.tiles));
 		this.parent = other;
 	}
 
@@ -37,28 +37,52 @@ public class State implements Comparable<State> {
 		return evaluator.evaluate(this);
 	}
 
-	List<State> createHierarchy() {
-		if (isRoot())
-			return new LinkedList<>();
+	List<State> createHierarchy() { // TODO: test this
 
-		List<State> hierarchy = parent.createHierarchy();
+		LinkedList<State> hierarchy = new LinkedList<>();
 
-		hierarchy.add(this);
+		for (State current = this; current != null; current = current.parent)
+			hierarchy.addFirst(current);
+
 		return hierarchy;
+	}
+
+	private int getRowOfEmpty() {
+		return indexOfEmpty / Utils.getN();
+	}
+
+	private int getColumnOfEmpty() {
+		return indexOfEmpty % Utils.getN();
+	}
+
+	private boolean isEmptyOnTopEdge() {
+		return getRowOfEmpty() == 0;
+	}
+
+	private boolean isEmptyOnBottomEdge() {
+		return getRowOfEmpty() == Utils.getN() - 1;
+	}
+
+	private boolean isEmptyOnLeftEdge() {
+		return getColumnOfEmpty() == 0;
+	}
+
+	private boolean isEmptyOnRightEdge() {
+		return getColumnOfEmpty() == Utils.getN() - 1;
 	}
 
 //	TODO: test. Was never tested
 	StateMap createChildren() {
 		StateMap children = new StateMap();
-		int indexOfEmpty = tiles.indexOf(0);
 
-		if (indexOfEmpty / Utils.getN() != 0) // UP
+		// TODO: switch case?
+		if (!isEmptyOnTopEdge()) // UP
 			children.put(createChild(indexOfEmpty, indexOfEmpty - Utils.getN()));
-		if (indexOfEmpty / Utils.getN() != Utils.getN() - 1) // DOWN
+		if (!isEmptyOnBottomEdge()) // DOWN
 			children.put(createChild(indexOfEmpty, indexOfEmpty + Utils.getN()));
-		if (indexOfEmpty % Utils.getN() != 0) // LEFT
+		if (!isEmptyOnLeftEdge()) // LEFT
 			children.put(createChild(indexOfEmpty, indexOfEmpty - 1));
-		if (indexOfEmpty % Utils.getN() != Utils.getN() - 1) // RIGHT
+		if (!isEmptyOnRightEdge()) // RIGHT
 			children.put(createChild(indexOfEmpty, indexOfEmpty + 1));
 
 		return children;
@@ -87,6 +111,7 @@ public class State implements Comparable<State> {
 
 	public void setTiles(List<Integer> tiles) {
 		this.tiles = tiles;
+		indexOfEmpty = tiles.indexOf(0);
 	}
 
 	@Override
@@ -102,4 +127,48 @@ public class State implements Comparable<State> {
 	public int size() {
 		return tiles.size();
 	}
+
+	private int countInversions() { // TODO: (un)boxing optimization
+
+		int inversions = 0;
+
+		for (int i = 0; i < size() - 1; i++) {
+
+			int a = tiles.get(i);
+			if (a == 0)
+				continue;
+
+			for (int j = i + 1; j < size(); j++) {
+
+				int b = tiles.get(j);
+				if (b != 0 && a > b)
+					inversions++;
+			}
+		}
+
+
+		return inversions;
+	}
+
+	// TODO: test this
+	public boolean isSolvable() {
+
+		int n = Utils.getN();
+		int inversions = countInversions();
+
+		// if n is even
+		if (n / 2 == 0) {
+
+			int positionFromBottom = n - getRowOfEmpty() + 1;
+
+			// if pos is even and inversions is odd
+			// or
+			// if pos is odd and inversions is even
+			return (positionFromBottom / 2 + inversions / 2) == 1;
+		}
+
+		// if n is odd and inversions is even
+		return inversions / 2 == 0;
+	}
+
 }

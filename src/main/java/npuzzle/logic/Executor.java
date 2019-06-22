@@ -1,12 +1,12 @@
 package npuzzle.logic;
 
+import npuzzle.utils.Constants;
+import npuzzle.utils.StateMap;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-
-import npuzzle.utils.Constants;
-import npuzzle.utils.StateMap;
 
 public class Executor {
 
@@ -29,7 +29,7 @@ public class Executor {
 	 * 5. get StateMap with possible moves state.createChildren()
 	 * 6. remove children which are in closed set
 	 * 7. if no children left -> break
-	 * 7. current = best child
+	 * 8. current = best child
 	 *
 	 * @see Algorithm#execute(State)
 	 */
@@ -41,9 +41,13 @@ public class Executor {
 		while (!current.isFinal()) {
 			closedSet.add(current.toString());
 			children = current.createChildren();
-			children.keySet().removeAll(closedSet);
-			if (children.isEmpty())
+			children.keySet().removeAll(closedSet); // TODO: move to StateMap
+			// TODO: does it really help?
+			children.removeUnsolvable(); // TODO: test this
+			if (children.isEmpty()) {
+				System.out.println("unsuccessful"); // TODO: DEL
 				break;
+			}
 			current = children.firstEntry().getValue();
 		}
 
