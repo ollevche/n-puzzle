@@ -1,7 +1,6 @@
 package npuzzle.logic;
 
 import npuzzle.utils.Constants;
-import npuzzle.utils.StateMap;
 
 import java.util.Collections;
 import java.util.List;
@@ -34,24 +33,22 @@ public class Executor {
 	 * @see Algorithm#execute(State)
 	 */
 	private static List<State> executeGreedy(State initial) {
-		Set<String> closedSet = new TreeSet<>();
+		Set<State> closedSet = new TreeSet<>();
 		State current = initial;
-		StateMap children;
+		TreeSet<State> children;
 
 		while (!current.isFinal()) {
-			closedSet.add(current.toString());
+			closedSet.add(current);
 			children = current.createChildren();
-			children.keySet().removeAll(closedSet); // TODO: move to StateMap
-			// TODO: does it really help?
-			children.removeUnsolvable(); // TODO: test this
+			children.removeAll(closedSet);
 			if (children.isEmpty()) {
 				System.out.println("unsuccessful"); // TODO: DEL
 				break;
 			}
-			current = children.firstEntry().getValue();
+			current = children.first();
 		}
 
-		return current.createHierarchy();
+		return current.collectPath();
 	}
 
 	private static List<State> executeAstar(State initial) {

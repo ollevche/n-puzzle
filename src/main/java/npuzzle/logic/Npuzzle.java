@@ -1,22 +1,35 @@
 package npuzzle.logic;
 
+import npuzzle.io.Input;
 import npuzzle.io.Writer;
-
-import java.util.List;
 
 public class Npuzzle {
 
-	private final Executor.Algorithm executor;
-	private final State startingState;
+	private Npuzzle() {
 
-	public Npuzzle(String algorithm, State startingState) {
-		executor = Executor.getAlgorithm(algorithm);
-		this.startingState = startingState;
 	}
 
-	public void execute() {
-		List<State> solution = executor.execute(startingState);
-		Writer.write(solution);
+	private static State createStartingState() {
+		return new State(Input.getInstance().getTiles(), Input.getInstance().getHeuristic());
+	}
+
+	private static Executor.Algorithm pickExecutor() {
+		return Executor.getAlgorithm(Input.getInstance().getAlgorithm());
+	}
+
+	public static boolean Execute() {
+
+		State startingState = createStartingState();
+		Executor.Algorithm algorithm = pickExecutor();
+
+		if (!startingState.isSolvable()) {
+			System.out.println("Sorry. This one is unsolvable.");
+			return false;
+		}
+
+		Writer.write(algorithm.execute(startingState));
+
+		return true;
 	}
 
 }
