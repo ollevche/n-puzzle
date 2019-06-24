@@ -1,8 +1,12 @@
 package npuzzle.io;
 
+import static npuzzle.utils.Constants.MANHATTAN;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import npuzzle.logic.State;
 
 public class Input {
 
@@ -72,7 +76,9 @@ public class Input {
 		tiles = new ArrayList<>(nByN);
 		while (--nByN >= 0)
 			tiles.add(nByN);
-		Collections.shuffle(tiles);
+
+		while (!new State(tiles, MANHATTAN).isSolvable())
+			Collections.shuffle(tiles);
 	}
 
 	public boolean isRandom() {
