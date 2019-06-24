@@ -1,75 +1,96 @@
 package npuzzle.logic;
 
+import com.google.common.collect.Comparators;
+import npuzzle.io.Input;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import java.util.*;
 
-import com.google.common.collect.Comparators;
-
-import npuzzle.utils.Constants;
-import npuzzle.utils.StateMap;
-import npuzzle.utils.Utils;
-
-// TODO: create Executor with 'mode' and 'n' fields
 // TODO: Solve the empty tile 0 or 9 problem.
 public class State implements Comparable<State> {
 
 	private List<Integer> tiles;
+	private int indexOfEmpty;
 	private final Evaluator.Heuristic evaluator;
 	private final State parent;
 
-	public State(String heuristic) {
-		evaluator = Evaluator.getHeuristic(heuristic);
-		parent = null;
-	}
-
-	public State(List<Integer> tiles) {
-		this(Constants.MANHATTAN);
+	public State(List<Integer> tiles, String heuristic) {
 		this.tiles = tiles;
+		this.indexOfEmpty = tiles.indexOf(0);
+		this.evaluator = Evaluator.getHeuristic(heuristic);
+		this.parent = null;
 	}
 
-	public State(State other) {
-		this.evaluator = other.evaluator;
+	public State(State other, State parent) {
 		this.tiles = new ArrayList<>(other.tiles);
-		this.parent = other;
+		this.indexOfEmpty = other.indexOfEmpty;
+		this.evaluator = other.evaluator;
+		this.parent = parent;
 	}
 
-//	TODO: cache this <- where and how?
+	//	TODO: cache this <- where and how?
 	int evaluate() {
 		return evaluator.evaluate(this);
 	}
 
-	List<State> createHierarchy() {
-		if (isRoot())
-			return new LinkedList<>();
+	List<State> collectPath() {
 
-		List<State> hierarchy = parent.createHierarchy();
+		LinkedList<State> path = new LinkedList<>();
 
-		hierarchy.add(this);
-		return hierarchy;
+		for (State current = this; current != null; current = current.parent)
+			path.addFirst(current);
+
+		return path;
 	}
 
-//	TODO: test. Was never tested
-	StateMap createChildren() {
-		StateMap children = new StateMap();
-		int indexOfEmpty = tiles.indexOf(0);
+	private int getRowOfEmpty() {
+		return indexOfEmpty / Input.getInstance().getN();
+	}
 
-		if (indexOfEmpty / Utils.getN() != 0) // UP
-			children.put(createChild(indexOfEmpty, indexOfEmpty - Utils.getN()));
-		if (indexOfEmpty / Utils.getN() != Utils.getN() - 1) // DOWN
-			children.put(createChild(indexOfEmpty, indexOfEmpty + Utils.getN()));
-		if (indexOfEmpty % Utils.getN() != 0) // LEFT
-			children.put(createChild(indexOfEmpty, indexOfEmpty - 1));
-		if (indexOfEmpty % Utils.getN() != Utils.getN() - 1) // RIGHT
-			children.put(createChild(indexOfEmpty, indexOfEmpty + 1));
+	private int getColumnOfEmpty() {
+		return indexOfEmpty % Input.getInstance().getN();
+	}
+
+	private boolean isEmptyOnTopEdge() {
+		return getRowOfEmpty() == 0;
+	}
+
+	private boolean isEmptyOnBottomEdge() {
+		return getRowOfEmpty() == Input.getInstance().getN() - 1;
+	}
+
+	private boolean isEmptyOnLeftEdge() {
+		return getColumnOfEmpty() == 0;
+	}
+
+	private boolean isEmptyOnRightEdge() {
+		return getColumnOfEmpty() == Input.getInstance().getN() - 1;
+	}
+
+	TreeSet<State> createChildren() {
+		TreeSet<State> children = new TreeSet<>();
+		int n = Input.getInstance().getN();
+
+		if (!isEmptyOnTopEdge()) // UP
+			children.add(createChild(indexOfEmpty, indexOfEmpty - n));
+		if (!isEmptyOnBottomEdge()) // DOWN
+			children.add(createChild(indexOfEmpty, indexOfEmpty + n));
+		if (!isEmptyOnLeftEdge()) // LEFT
+			children.add(createChild(indexOfEmpty, indexOfEmpty - 1));
+		if (!isEmptyOnRightEdge()) // RIGHT
+			children.add(createChild(indexOfEmpty, indexOfEmpty + 1));
 
 		return children;
 	}
 
-	private Map.Entry<String, State> createChild(int i, int j) {
-		State child = new State(this);
+	private State createChild(int i, int j) {
+		State child = new State(this, this);
 
 		child.tiles.set(i, child.tiles.get(j));
 		child.tiles.set(j, 0);
-		return new AbstractMap.SimpleEntry<>(child.toString(), child);
+		child.indexOfEmpty = j;
+
+		return child;
 	}
 
 	@SuppressWarnings("UnstableApiUsage")
@@ -85,13 +106,14 @@ public class State implements Comparable<State> {
 		return tiles;
 	}
 
-	public void setTiles(List<Integer> tiles) {
-		this.tiles = tiles;
-	}
-
+	// TODO: fix compareTo
 	@Override
-	public int compareTo(State o) {
-		return evaluate() - o.evaluate();
+	public int compareTo(@NonNull State o) {
+
+		if (this.equals(o))
+			return 0;
+
+		return (evaluate() - o.evaluate()) * 10 + 1;
 	}
 
 	@Override
@@ -102,4 +124,47 @@ public class State implements Comparable<State> {
 	public int size() {
 		return tiles.size();
 	}
+
+	// TODO: (un)boxing optimization
+	private int countInversions() {
+
+		int inversions = 0;
+
+		for (int i = 0; i < size() - 1; i++) {
+
+			int a = tiles.get(i);
+			if (a == 0)
+				continue;
+
+			for (int j = i + 1; j < size(); j++) {
+
+				int b = tiles.get(j);
+				if (b != 0 && a > b)
+					inversions++;
+			}
+		}
+
+		return inversions;
+	}
+
+	public boolean isSolvable() {
+
+		int inversions = countInversions();
+		int n = Input.getInstance().getN();
+
+		// if n is even
+		if (n % 2 == 0) {
+
+			int positionFromBottom = n - getRowOfEmpty();
+
+			// if pos is even and inversions is odd
+			// or
+			// if pos is odd and inversions is even
+			return (positionFromBottom % 2 + inversions % 2) == 1;
+		}
+
+		// if n is odd and inversions is even
+		return inversions % 2 == 0;
+	}
+
 }

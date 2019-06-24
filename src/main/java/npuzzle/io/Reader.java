@@ -1,17 +1,9 @@
 package npuzzle.io;
 
-import npuzzle.logic.State;
-import npuzzle.utils.Constants;
-import npuzzle.utils.Utils;
-import org.apache.commons.lang3.StringUtils;
+import npuzzle.utils.InvalidInputException;
+import org.apache.commons.cli.*;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * @author dpozinen
@@ -21,33 +13,76 @@ import java.util.List;
 
 public class Reader {
 
-	private String fullFileName;
-	private List<Integer> tiles = new ArrayList<>();
+	private static Options options = prepareOptions();
 
-	public Reader() {
+	private static final String ALGORITHM = "algorithm";
+	private static final String HEURISTIC = "heuristic";
+	private static final String FILE = "file";
+	private static final String RANDOM = "random";
+
+	// TODO: better descriptions
+	private static final String ALGORITHM_DESCRIPTION = "Algorithm type to use.";
+	private static final String HEURISTIC_DESCRIPTION = "Heuristic function to use.";
+	private static final String FILE_DESCRIPTION = "File to use as source of input.";
+	private static final String RANDOM_DESCRIPTION = "Use random input.";
+
+	private Reader() {
 	}
 
-	public Reader(String fullFileName) {
-		this.fullFileName = fullFileName;
+	private static Options prepareOptions() {
+
+		Options options = new Options();
+
+		options.addRequiredOption("a", ALGORITHM, true, ALGORITHM_DESCRIPTION);
+		options.addRequiredOption("h", HEURISTIC, true, HEURISTIC_DESCRIPTION);
+		options.addOption("f", FILE, true, FILE_DESCRIPTION);
+		options.addOption("r", RANDOM, true, RANDOM_DESCRIPTION);
+
+		return options;
 	}
 
-	public State read() {
+	public static boolean readInput(String[] args) {
+
+		boolean isSuccessful = false;
+
 		try {
-			readInput();
-			return new State(tiles);
+			parseArgs(args);
+			if (!Input.getInstance().isRandom())
+				readTiles();
+			isSuccessful = true;
 		} catch (IOException e) {
+			System.err.println("Cannot read input: " + e.getMessage());
+		} catch (ParseException e) {
+			System.err.println("Invalid argument: " + e.getMessage());
+			new HelpFormatter().printHelp("N-puzzle", options);
+		} catch (InvalidInputException e) {
 			System.err.println(e.getMessage());
 		}
-		return null;
+
+		return isSuccessful;
 	}
 
-	private void readInput() throws IOException {
+	private static void parseArgs(String[] args) throws ParseException {
+
+		CommandLineParser parser = new DefaultParser();
+		CommandLine line = parser.parse(options, args);
+		Validator validator = new Validator();
+
+		validator.saveValidAlgorithm(line.getOptionValue(ALGORITHM));
+		validator.saveValidHeuristic(line.getOptionValue(HEURISTIC));
+		validator.saveValidFile(line.getOptionValue(FILE));
+		if (line.hasOption(RANDOM))
+			validator.saveValidRandomArg(line.getOptionValue(RANDOM));
+	}
+
+	private static void readTiles() throws IOException {
+
 		String line;
 		InputStream inputStream;
-		Validator validator = new Validator(tiles);
+		Validator validator = new Validator();
 
-		if (fullFileName != null)
-			inputStream = new BufferedInputStream(new FileInputStream(fullFileName));
+		if (Input.getInstance().hasFile())
+			inputStream = new BufferedInputStream(new FileInputStream(Input.getInstance().getFile()));
 		else
 			inputStream = System.in;
 
@@ -56,36 +91,7 @@ public class Reader {
 				validator.validateLine(line);
 		}
 		validator.checkEnoughTiles();
-	}
-
-	public void readArgs(String[] args) {
-		List<String> argList = Arrays.asList(args);
-
-		if (argList.isEmpty()) {
-			Utils.setMode(Constants.ASTAR);
-			return;
-		}
-
-		for (String s : argList) {
-			if (s.startsWith("file"))
-				fullFileName = StringUtils.substringBetween(s, "(", ")");
-			if (s.startsWith("mode"))
-				setMode(StringUtils.substringBetween(s, "(", ")"));
-		}
-	}
-
-	private void setMode(String modes) {
-		if (StringUtils.containsIgnoreCase(modes, Constants.GREEDY))
-			Utils.setMode(Constants.GREEDY);
-		else if (StringUtils.containsIgnoreCase(modes, Constants.ASTAR))
-			Utils.setMode(Constants.ASTAR);
-		else if (StringUtils.containsIgnoreCase(modes, Constants.UNIFORM))
-			Utils.setMode(Constants.UNIFORM);
-	}
-
-	@Deprecated
-	private List<String> readFromFile() throws IOException {
-		return Files.readAllLines(Paths.get(fullFileName), StandardCharsets.UTF_8);
+		validator.saveValidatedTiles();
 	}
 
 }

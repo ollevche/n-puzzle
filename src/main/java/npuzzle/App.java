@@ -1,28 +1,22 @@
 package npuzzle;
 
+import npuzzle.io.Input;
 import npuzzle.io.Reader;
-import npuzzle.io.Writer;
-import npuzzle.logic.State;
-
-import java.util.ArrayList;
-import java.util.List;
+import npuzzle.logic.Npuzzle;
 
 public class App {
 
-	// TODO: proper main() function
-
 	public static void main(String[] args) {
-		Reader reader = new Reader();
-//				new Reader("C:\\Users\\User\\Desktop\\Code\\Reports\\STATE.txt");
-		reader.readArgs(args);
-		State startingState = reader.read();
 
-		List<State> states = new ArrayList<>();
-		states.add(startingState);
+		if (!Reader.readInput(args))
+			return;
 
-		for (int i = 0; i < 10; i++)
-			states.add(new State(startingState));
-		new Writer().write(states);
+		System.out.println(Input.getInstance().toString());
+
+		if (!Npuzzle.Execute())
+			return;
+
+		System.out.println("Executed successfully.");
 	}
 
 }

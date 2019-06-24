@@ -1,12 +1,11 @@
 package npuzzle.logic;
 
+import npuzzle.utils.Constants;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-
-import npuzzle.utils.Constants;
-import npuzzle.utils.StateMap;
 
 public class Executor {
 
@@ -29,25 +28,27 @@ public class Executor {
 	 * 5. get StateMap with possible moves state.createChildren()
 	 * 6. remove children which are in closed set
 	 * 7. if no children left -> break
-	 * 7. current = best child
+	 * 8. current = best child
 	 *
 	 * @see Algorithm#execute(State)
 	 */
 	private static List<State> executeGreedy(State initial) {
-		Set<String> closedSet = new TreeSet<>();
+		Set<State> closedSet = new TreeSet<>();
 		State current = initial;
-		StateMap children;
+		TreeSet<State> children;
 
 		while (!current.isFinal()) {
-			closedSet.add(current.toString());
+			closedSet.add(current);
 			children = current.createChildren();
-			children.keySet().removeAll(closedSet);
-			if (children.isEmpty())
+			children.removeAll(closedSet);
+			if (children.isEmpty()) {
+				System.out.println("unsuccessful"); // TODO: DEL
 				break;
-			current = children.firstEntry().getValue();
+			}
+			current = children.first();
 		}
 
-		return current.createHierarchy();
+		return current.collectPath();
 	}
 
 //	TODO: add g(x)

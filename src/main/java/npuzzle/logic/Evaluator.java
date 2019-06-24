@@ -1,53 +1,46 @@
 package npuzzle.logic;
 
+import npuzzle.io.Input;
+import npuzzle.utils.Constants;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javafx.util.Pair;
-import npuzzle.utils.Constants;
-import npuzzle.utils.Utils;
+// TODO: add 2 more heuristic functions
 
-//	TODO: these modes should be replaced by 3 heuristic functions. Constants should determine steps higher
 public class Evaluator {
-
-	private static final List<Pair<Integer, Integer>> xyList = createReferenceList();
 
 	@FunctionalInterface
 	public interface Heuristic {
 		int evaluate(State state);
 	}
 
-//	TODO: Test.
 	private static int manhattan(State state) {
+
+		// TODO: fix: xyList cannot be created on load but shouldn't be calculated every time
+		List<Pair<Integer, Integer>> xyList = createReferenceList();
+
 		List<Integer> tiles = state.getTiles();
-		int x, y, n = Utils.getN();
+		Integer tile;
+		int x, y, n = Input.getInstance().getN();
 		int stateEval = 0;
 
-		for (Integer i : tiles) {
-			x = i % n;
-			y = i / n;
-			stateEval += Math.abs(x - xyList.get(i).getKey()) + Math.abs(y - xyList.get(i).getValue()) ;
+		for (int index = 0; index < tiles.size(); index++) {
+			x = index % n;
+			y = index / n;
+			tile = tiles.get(index);
+			stateEval += Math.abs(x - xyList.get(tile).getKey()) + Math.abs(y - xyList.get(tile).getValue());
 		}
 		return stateEval;
-	}
-
-	private static int greedy(State state) {
-		return 0;
-	}
-
-	private static int uniform(State state) {
-		return 0;
 	}
 
 	public static Heuristic getHeuristic(String heuristic) {
 		switch (heuristic) {
 			case Constants.MANHATTAN:
 				return Evaluator::manhattan;
-			case Constants.GREEDY:
-				return Evaluator::greedy;
-			case Constants.UNIFORM:
-				return Evaluator::uniform;
 			default:
 				return null;
 		}
@@ -55,13 +48,12 @@ public class Evaluator {
 
 	private static List<Pair<Integer, Integer>> createReferenceList() {
 		List<Pair<Integer, Integer>> xyList = new ArrayList<>();
-		int nByN = Utils.getN() * Utils.getN();
-		int n = Utils.getN();
+		int n = Input.getInstance().getN(), nByN = n * n;
 		int x = 0, y = 0, i = 0;
 
 		while (i < nByN) {
 			while (x < n) {
-				xyList.add(new Pair<>(x, y));
+				xyList.add(new ImmutablePair<>(x, y));
 				x++;
 			}
 			i += x;

@@ -1,7 +1,6 @@
 package npuzzle.io;
 
 import npuzzle.logic.State;
-import npuzzle.utils.Utils;
 
 import java.util.List;
 
@@ -20,7 +19,7 @@ public class Writer {
 
 		for (Integer tile : state.getTiles()) {
 			rows.append(String.format("%5s", String.valueOf(tile)));
-			if (++col < Utils.getN()) {
+			if (++col < Input.getInstance().getN()) {
 				rows.append(" ");
 			} else {
 				rows.append("\n");
@@ -34,17 +33,16 @@ public class Writer {
 	public static void write(List<State> states) {
 		int i = states.size();
 		int offset = 15;
-		String format = "%" + offset + "s";
-		String arrowFormat = "%" + (offset + 1) + "s";
+		String format = "%" + offset + "s\n";
+		String arrowFormat = "%" + (offset + 1) + "s\n";
 
 		for (State state : states) {
 			write(state);
 			if (--i > 0) {
-				System.out.println(String.format(format, "|"));
-				System.out.println(String.format(format, "|"));
-				System.out.println(String.format(arrowFormat, "\\ /"));
+				System.out.printf(format, "|");
+				System.out.printf(format, "|");
+				System.out.printf(arrowFormat, "\\ /");
 			}
 		}
 	}
-
 }
