@@ -2,6 +2,7 @@ package npuzzle;
 
 import npuzzle.io.Input;
 import npuzzle.io.Reader;
+import npuzzle.logic.Evaluator;
 import npuzzle.logic.Npuzzle;
 
 public class App {
@@ -13,7 +14,8 @@ public class App {
 
 		System.out.println(Input.getInstance().toString());
 
-		if (!Npuzzle.Execute())
+		Evaluator.createReferenceList();
+		if (!Npuzzle.execute())
 			return;
 
 		System.out.println("Executed successfully.");

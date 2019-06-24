@@ -1,12 +1,16 @@
 package npuzzle.io;
 
-import npuzzle.utils.InvalidInputException;
-import org.apache.commons.cli.*;
+import static npuzzle.utils.Constants.*;
 
 import java.io.*;
 
+import org.apache.commons.cli.*;
+
+import npuzzle.utils.InvalidInputException;
+
 /**
  * @author dpozinen
+ * @author ollevche
  * <p>
  * used to read program input
  */
@@ -15,22 +19,10 @@ public class Reader {
 
 	private static Options options = prepareOptions();
 
-	private static final String ALGORITHM = "algorithm";
-	private static final String HEURISTIC = "heuristic";
-	private static final String FILE = "file";
-	private static final String RANDOM = "random";
-
-	// TODO: better descriptions
-	private static final String ALGORITHM_DESCRIPTION = "Algorithm type to use.";
-	private static final String HEURISTIC_DESCRIPTION = "Heuristic function to use.";
-	private static final String FILE_DESCRIPTION = "File to use as source of input.";
-	private static final String RANDOM_DESCRIPTION = "Use random input.";
-
 	private Reader() {
 	}
 
 	private static Options prepareOptions() {
-
 		Options options = new Options();
 
 		options.addRequiredOption("a", ALGORITHM, true, ALGORITHM_DESCRIPTION);
@@ -42,14 +34,11 @@ public class Reader {
 	}
 
 	public static boolean readInput(String[] args) {
-
-		boolean isSuccessful = false;
-
 		try {
 			parseArgs(args);
 			if (!Input.getInstance().isRandom())
 				readTiles();
-			isSuccessful = true;
+			return true;
 		} catch (IOException e) {
 			System.err.println("Cannot read input: " + e.getMessage());
 		} catch (ParseException e) {
@@ -59,11 +48,10 @@ public class Reader {
 			System.err.println(e.getMessage());
 		}
 
-		return isSuccessful;
+		return false;
 	}
 
 	private static void parseArgs(String[] args) throws ParseException {
-
 		CommandLineParser parser = new DefaultParser();
 		CommandLine line = parser.parse(options, args);
 		Validator validator = new Validator();
@@ -76,7 +64,6 @@ public class Reader {
 	}
 
 	private static void readTiles() throws IOException {
-
 		String line;
 		InputStream inputStream;
 		Validator validator = new Validator();

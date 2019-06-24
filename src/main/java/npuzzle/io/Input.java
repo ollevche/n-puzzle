@@ -65,7 +65,6 @@ public class Input {
 	}
 
 	public void generateRandomTiles(int n) {
-
 		this.n = n;
 		isRandom = true;
 		int nByN = n * n;
@@ -82,8 +81,7 @@ public class Input {
 
 	@Override
 	public String toString() {
-		return String.format("Input: algorithm = %s; heuristic = %s; n = %d; isRandom = %b.",
-				algorithm, heuristic, n, isRandom);
+		return String.format("Input: algorithm = %s; heuristic = %s; n = %d; isRandom = %b.", algorithm, heuristic, n, isRandom);
 	}
 
 }

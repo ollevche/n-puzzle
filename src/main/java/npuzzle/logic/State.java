@@ -1,10 +1,12 @@
 package npuzzle.logic;
 
-import com.google.common.collect.Comparators;
-import npuzzle.io.Input;
+import java.util.*;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.*;
+import com.google.common.collect.Comparators;
+
+import npuzzle.io.Input;
 
 // TODO: Solve the empty tile 0 or 9 problem.
 public class State implements Comparable<State> {
@@ -33,40 +35,6 @@ public class State implements Comparable<State> {
 		return evaluator.evaluate(this);
 	}
 
-	List<State> collectPath() {
-
-		LinkedList<State> path = new LinkedList<>();
-
-		for (State current = this; current != null; current = current.parent)
-			path.addFirst(current);
-
-		return path;
-	}
-
-	private int getRowOfEmpty() {
-		return indexOfEmpty / Input.getInstance().getN();
-	}
-
-	private int getColumnOfEmpty() {
-		return indexOfEmpty % Input.getInstance().getN();
-	}
-
-	private boolean isEmptyOnTopEdge() {
-		return getRowOfEmpty() == 0;
-	}
-
-	private boolean isEmptyOnBottomEdge() {
-		return getRowOfEmpty() == Input.getInstance().getN() - 1;
-	}
-
-	private boolean isEmptyOnLeftEdge() {
-		return getColumnOfEmpty() == 0;
-	}
-
-	private boolean isEmptyOnRightEdge() {
-		return getColumnOfEmpty() == Input.getInstance().getN() - 1;
-	}
-
 	TreeSet<State> createChildren() {
 		TreeSet<State> children = new TreeSet<>();
 		int n = Input.getInstance().getN();
@@ -91,6 +59,54 @@ public class State implements Comparable<State> {
 		child.indexOfEmpty = j;
 
 		return child;
+	}
+
+	// TODO: (un)boxing optimization
+	private int countInversions() {
+		int inversions = 0;
+
+		for (int i = 0; i < size() - 1; i++) {
+
+			int a = tiles.get(i);
+			if (a == 0)
+				continue;
+
+			for (int j = i + 1; j < size(); j++) {
+
+				int b = tiles.get(j);
+				if (b != 0 && a > b)
+					inversions++;
+			}
+		}
+
+		return inversions;
+	}
+
+	public boolean isSolvable() {
+		int inversions = countInversions();
+		int n = Input.getInstance().getN();
+
+		// if n is even
+		if (n % 2 == 0) {
+
+			int positionFromBottom = n - getRowOfEmpty();
+			/* 	if pos is even and inversions is odd
+			 	or
+			 	if pos is odd and inversions is even */
+			return (positionFromBottom % 2 + inversions % 2) == 1;
+		}
+
+		// if n is odd and inversions is even
+		return inversions % 2 == 0;
+	}
+
+	List<State> collectPath() {
+		LinkedList<State> path = new LinkedList<>();
+
+		for (State current = this; current != null; current = current.parent)
+			path.addFirst(current);
+
+		return path;
 	}
 
 	@SuppressWarnings("UnstableApiUsage")
@@ -125,46 +141,28 @@ public class State implements Comparable<State> {
 		return tiles.size();
 	}
 
-	// TODO: (un)boxing optimization
-	private int countInversions() {
-
-		int inversions = 0;
-
-		for (int i = 0; i < size() - 1; i++) {
-
-			int a = tiles.get(i);
-			if (a == 0)
-				continue;
-
-			for (int j = i + 1; j < size(); j++) {
-
-				int b = tiles.get(j);
-				if (b != 0 && a > b)
-					inversions++;
-			}
-		}
-
-		return inversions;
+	private int getRowOfEmpty() {
+		return indexOfEmpty / Input.getInstance().getN();
 	}
 
-	public boolean isSolvable() {
+	private int getColumnOfEmpty() {
+		return indexOfEmpty % Input.getInstance().getN();
+	}
 
-		int inversions = countInversions();
-		int n = Input.getInstance().getN();
+	private boolean isEmptyOnTopEdge() {
+		return getRowOfEmpty() == 0;
+	}
 
-		// if n is even
-		if (n % 2 == 0) {
+	private boolean isEmptyOnBottomEdge() {
+		return getRowOfEmpty() == Input.getInstance().getN() - 1;
+	}
 
-			int positionFromBottom = n - getRowOfEmpty();
+	private boolean isEmptyOnLeftEdge() {
+		return getColumnOfEmpty() == 0;
+	}
 
-			// if pos is even and inversions is odd
-			// or
-			// if pos is odd and inversions is even
-			return (positionFromBottom % 2 + inversions % 2) == 1;
-		}
-
-		// if n is odd and inversions is even
-		return inversions % 2 == 0;
+	private boolean isEmptyOnRightEdge() {
+		return getColumnOfEmpty() == Input.getInstance().getN() - 1;
 	}
 
 }

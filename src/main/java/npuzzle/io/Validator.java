@@ -1,14 +1,15 @@
 package npuzzle.io;
 
-import npuzzle.utils.Constants;
-import npuzzle.utils.Error;
-import npuzzle.utils.InvalidInputException;
+import static npuzzle.utils.Constants.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import npuzzle.utils.Error;
+import npuzzle.utils.InvalidInputException;
 
 public class Validator {
 
@@ -111,9 +112,11 @@ public class Validator {
 	}
 
 	void saveValidRandomArg(String undef) {
+		undef = undef.trim();
 
 		if (!undef.matches("\\d+"))
 			throw new InvalidInputException(Error.NON_NUMERIC, undef);
+
 		int randomN = Integer.valueOf(undef);
 		if (randomN < 2)
 			throw new InvalidInputException(Error.RANDOM_TOO_SMALL, undef);
@@ -122,18 +125,17 @@ public class Validator {
 	}
 
 	public void saveValidAlgorithm(String undef) {
-
 		String algorithm;
 
 		switch (undef.trim().toLowerCase()) {
-			case Constants.GREEDY:
-				algorithm = Constants.GREEDY;
+			case GREEDY:
+				algorithm = GREEDY;
 				break;
-			case Constants.UNIFORM:
-				algorithm = Constants.UNIFORM;
+			case UNIFORM:
+				algorithm = UNIFORM;
 				break;
-			case Constants.ASTAR:
-				algorithm = Constants.ASTAR;
+			case ASTAR:
+				algorithm = ASTAR;
 				break;
 			default:
 				throw new InvalidInputException(Error.ARG_NOT_FOUND, undef);
@@ -143,12 +145,11 @@ public class Validator {
 	}
 
 	public void saveValidHeuristic(String undef) {
-
 		String heuristic;
 
 		switch (undef.trim().toLowerCase()) {
-			case Constants.MANHATTAN:
-				heuristic = Constants.MANHATTAN;
+			case MANHATTAN:
+				heuristic = MANHATTAN;
 				break;
 			default:
 				throw new InvalidInputException(Error.ARG_NOT_FOUND, undef);

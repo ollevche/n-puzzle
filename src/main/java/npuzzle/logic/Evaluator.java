@@ -1,17 +1,21 @@
 package npuzzle.logic;
 
-import npuzzle.io.Input;
-import npuzzle.utils.Constants;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
+import static npuzzle.utils.Constants.MANHATTAN;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
+import npuzzle.io.Input;
+
 // TODO: add 2 more heuristic functions
 
 public class Evaluator {
+
+	private static List<Pair<Integer, Integer>> xyList;
 
 	@FunctionalInterface
 	public interface Heuristic {
@@ -19,9 +23,8 @@ public class Evaluator {
 	}
 
 	private static int manhattan(State state) {
-
 		// TODO: fix: xyList cannot be created on load but shouldn't be calculated every time
-		List<Pair<Integer, Integer>> xyList = createReferenceList();
+
 
 		List<Integer> tiles = state.getTiles();
 		Integer tile;
@@ -39,15 +42,15 @@ public class Evaluator {
 
 	public static Heuristic getHeuristic(String heuristic) {
 		switch (heuristic) {
-			case Constants.MANHATTAN:
+			case MANHATTAN:
 				return Evaluator::manhattan;
 			default:
 				return null;
 		}
 	}
 
-	private static List<Pair<Integer, Integer>> createReferenceList() {
-		List<Pair<Integer, Integer>> xyList = new ArrayList<>();
+	public static void createReferenceList() {
+		xyList = new ArrayList<>();
 		int n = Input.getInstance().getN(), nByN = n * n;
 		int x = 0, y = 0, i = 0;
 
@@ -60,6 +63,6 @@ public class Evaluator {
 			x = 0;
 			y++;
 		}
-		return Collections.unmodifiableList(xyList);
+		xyList = Collections.unmodifiableList(xyList);
 	}
 }

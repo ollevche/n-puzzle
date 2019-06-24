@@ -9,27 +9,22 @@ public class Npuzzle {
 
 	}
 
-	private static State createStartingState() {
-		return new State(Input.getInstance().getTiles(), Input.getInstance().getHeuristic());
-	}
-
-	private static Executor.Algorithm pickExecutor() {
-		return Executor.getAlgorithm(Input.getInstance().getAlgorithm());
-	}
-
-	public static boolean Execute() {
-
+	public static boolean execute() {
 		State startingState = createStartingState();
-		Executor.Algorithm algorithm = pickExecutor();
+		Executor.Algorithm executor = Executor.getAlgorithm(Input.getInstance().getAlgorithm());
 
 		if (!startingState.isSolvable()) {
 			System.out.println("Sorry. This one is unsolvable.");
 			return false;
 		}
 
-		Writer.write(algorithm.execute(startingState));
+		Writer.write(executor.execute(startingState));
 
 		return true;
+	}
+
+	private static State createStartingState() {
+		return new State(Input.getInstance().getTiles(), Input.getInstance().getHeuristic());
 	}
 
 }
