@@ -1,8 +1,8 @@
 package npuzzle.io;
 
-import npuzzle.logic.State;
-
 import java.util.List;
+
+import npuzzle.logic.State;
 
 /**
  * @author dpozinen
@@ -12,6 +12,13 @@ import java.util.List;
  */
 
 public class Writer {
+
+	public static void write(List<State> states, boolean fast) {
+		if (fast)
+			writeFast(states);
+		else
+			writeSlow(states);
+	}
 
 	public static void write(State state) {
 		StringBuilder rows = new StringBuilder();
@@ -29,8 +36,15 @@ public class Writer {
 		System.out.println(rows);
 	}
 
+	private static void writeFast(List<State> states) {
+		StringBuilder sb = new StringBuilder();
+		for (State s : states)
+			sb.append(s).append("\n");
+		System.out.println(sb);
+	}
+
 	// TODO: count proper offset
-	public static void write(List<State> states) {
+	private static void writeSlow(List<State> states) {
 		int i = states.size();
 		int offset = 15;
 		String format = "%" + offset + "s\n";
