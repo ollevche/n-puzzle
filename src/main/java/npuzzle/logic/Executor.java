@@ -1,11 +1,11 @@
 package npuzzle.logic;
 
-import npuzzle.utils.Constants;
+import java.util.*;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import com.google.common.collect.Multiset;
+import com.google.common.collect.TreeMultiset;
+
+import npuzzle.utils.Constants;
 
 public class Executor {
 
@@ -33,9 +33,9 @@ public class Executor {
 	 * @see Algorithm#execute(State)
 	 */
 	private static List<State> executeGreedy(State initial) {
-		Set<State> closedSet = new TreeSet<>();
+		Set<State> closedSet = new HashSet<>();
 		State current = initial;
-		TreeSet<State> children;
+		TreeMultiset<State> children;
 
 		while (!current.isFinal()) {
 			closedSet.add(current);
@@ -45,7 +45,7 @@ public class Executor {
 				System.out.println("unsuccessful"); // TODO: DEL
 				break;
 			}
-			current = children.first();
+			current = children.firstEntry().getElement();
 		}
 
 		return current.collectPath();
@@ -54,23 +54,23 @@ public class Executor {
 //	TODO: add g(x)
 //	TODO: test
 	private static List<State> executeAstar(State initial) {
-		Set<String> closedSet = new TreeSet<>();
-		StateMap openSet = new StateMap();
+		HashSet<State> closedSet = new HashSet<>();
+		TreeSet<State> openSet = new TreeSet<>();
 		State current = initial;
-		StateMap children;
+		Multiset<State> children;
 
 		while (!current.isFinal()) {
-			closedSet.add(current.toString());
-			openSet.remove(current.toString());
+			closedSet.add(current);
+			openSet.remove(current);
 			children = current.createChildren();
-			children.keySet().removeAll(closedSet);
-			openSet.putAll(children);
+			children.removeAll(closedSet);
+			openSet.addAll(children);
 			if (openSet.isEmpty())
 				break;
-			current = openSet.firstEntry().getValue();
+			current = openSet.first();
 		}
 
-		return current.createHierarchy();
+		return current.collectPath();
 	}
 
 	private static List<State> executeUniform(State initial) {

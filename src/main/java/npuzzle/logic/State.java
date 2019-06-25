@@ -1,10 +1,14 @@
 package npuzzle.logic;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import com.google.common.collect.Comparators;
+import com.google.common.collect.TreeMultiset;
 
 import npuzzle.io.Input;
 
@@ -35,8 +39,8 @@ public class State implements Comparable<State> {
 		return evaluator.evaluate(this);
 	}
 
-	TreeSet<State> createChildren() {
-		TreeSet<State> children = new TreeSet<>();
+	TreeMultiset<State> createChildren() {
+		TreeMultiset<State> children = TreeMultiset.create(Comparator.comparing(State::evaluate));
 		int n = Input.getInstance().getN();
 
 		if (!isEmptyOnTopEdge()) // UP
@@ -125,11 +129,20 @@ public class State implements Comparable<State> {
 	// TODO: fix compareTo
 	@Override
 	public int compareTo(@NonNull State o) {
+//		if (this.equals(o))
+//			return 0;
 
-		if (this.equals(o))
-			return 0;
+		return evaluate() - o.evaluate();
+	}
 
-		return (evaluate() - o.evaluate()) * 10 + 1;
+	@Override public boolean equals(Object obj) {
+		if (obj != null && obj.getClass().equals(State.class))
+			return tiles.equals(((State)obj).tiles);
+		return false;
+	}
+
+	@Override public int hashCode() {
+		return tiles.hashCode();
 	}
 
 	@Override

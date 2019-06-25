@@ -23,9 +23,6 @@ public class Evaluator {
 	}
 
 	private static int manhattan(State state) {
-		// TODO: fix: xyList cannot be created on load but shouldn't be calculated every time
-
-
 		List<Integer> tiles = state.getTiles();
 		Integer tile;
 		int x, y, n = Input.getInstance().getN();

@@ -18,7 +18,7 @@ public class Npuzzle {
 			return false;
 		}
 
-		Writer.write(executor.execute(startingState));
+		Writer.write(executor.execute(startingState), true);
 
 		return true;
 	}
