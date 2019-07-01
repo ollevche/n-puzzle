@@ -18,6 +18,7 @@ public class Writer {
 			writeFast(states);
 		else
 			writeSlow(states);
+		System.out.println("Path length:" + states.size());
 	}
 
 	public static void write(State state) {
