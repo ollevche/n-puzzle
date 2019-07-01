@@ -8,7 +8,6 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import com.google.common.collect.Comparators;
-import com.google.common.collect.TreeMultiset;
 
 import npuzzle.io.Input;
 
@@ -19,6 +18,7 @@ public class State implements Comparable<State> {
 	private int indexOfEmpty;
 	private final Evaluator.Heuristic evaluator;
 	private final State parent;
+	private int evaluation = -1;
 
 	public State(List<Integer> tiles, String heuristic) {
 		this.tiles = tiles;
@@ -36,11 +36,12 @@ public class State implements Comparable<State> {
 
 	//	TODO: cache this <- where and how?
 	int evaluate() {
-		return evaluator.evaluate(this);
+		evaluation = evaluator.evaluate(this);
+		return evaluation;
 	}
 
-	TreeMultiset<State> createChildren() {
-		TreeMultiset<State> children = TreeMultiset.create(Comparator.comparing(State::evaluate));
+	List<State> createChildren() {
+		List<State> children = new ArrayList<>();
 		int n = Input.getInstance().getN();
 
 		if (!isEmptyOnTopEdge()) // UP
@@ -129,10 +130,11 @@ public class State implements Comparable<State> {
 	// TODO: fix compareTo
 	@Override
 	public int compareTo(@NonNull State o) {
-//		if (this.equals(o))
-//			return 0;
-
-		return evaluate() - o.evaluate();
+		if (evaluation == -1)
+			evaluate();
+		if (o.evaluation == -1)
+			o.evaluate();
+		return evaluation - o.evaluation;
 	}
 
 	@Override public boolean equals(Object obj) {
@@ -176,6 +178,11 @@ public class State implements Comparable<State> {
 
 	private boolean isEmptyOnRightEdge() {
 		return getColumnOfEmpty() == Input.getInstance().getN() - 1;
+	}
+
+	void incrementEvaluation() {
+		if (evaluation != -1)
+			evaluation++;
 	}
 
 }

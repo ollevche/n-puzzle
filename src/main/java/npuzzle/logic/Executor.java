@@ -1,9 +1,8 @@
 package npuzzle.logic;
 
-import java.util.*;
-
-import com.google.common.collect.Multiset;
-import com.google.common.collect.TreeMultiset;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import npuzzle.utils.Constants;
 
@@ -33,19 +32,19 @@ public class Executor {
 	 * @see Algorithm#execute(State)
 	 */
 	private static List<State> executeGreedy(State initial) {
-		Set<State> closedSet = new HashSet<>();
+		List<State> closedSet = new ArrayList<>();
 		State current = initial;
-		TreeMultiset<State> children;
+		List<State> children;
 
 		while (!current.isFinal()) {
 			closedSet.add(current);
 			children = current.createChildren();
-			children.removeAll(closedSet);
 			if (children.isEmpty()) {
 				System.out.println("unsuccessful"); // TODO: DEL
 				break;
 			}
-			current = children.firstEntry().getElement();
+			Collections.sort(children);
+			current = children.get(0);
 		}
 
 		return current.collectPath();
@@ -54,10 +53,10 @@ public class Executor {
 //	TODO: add g(x)
 //	TODO: test
 	private static List<State> executeAstar(State initial) {
-		HashSet<State> closedSet = new HashSet<>();
-		TreeSet<State> openSet = new TreeSet<>();
+		List<State> closedSet = new ArrayList<>();
+		List<State> openSet = new ArrayList<>();
 		State current = initial;
-		Multiset<State> children;
+		List<State> children;
 
 		while (!current.isFinal()) {
 			closedSet.add(current);
@@ -67,7 +66,8 @@ public class Executor {
 			openSet.addAll(children);
 			if (openSet.isEmpty())
 				break;
-			current = openSet.first();
+			Collections.sort(openSet);
+			current = openSet.get(0);
 		}
 
 		return current.collectPath();
