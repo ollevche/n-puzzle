@@ -1,17 +1,14 @@
 package npuzzle.logic;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import static npuzzle.utils.Constants.*;
 
-import npuzzle.utils.Constants;
+import java.util.*;
 
-public class Executor {
+class Executor {
 
 	@FunctionalInterface
 	public interface Algorithm {
 		/**
-		 *
 		 * @param initial - the Starting/Initial State from input
 		 * @return all parents chained together -> form a list of all moves made to achieve the final state
 		 */
@@ -38,13 +35,13 @@ public class Executor {
 
 		while (!current.isFinal()) {
 			closedSet.add(current);
-			children = current.createChildren();
-			if (children.isEmpty()) {
-				System.out.println("unsuccessful"); // TODO: DEL
-				break;
-			}
-			Collections.sort(children);
-			current = children.get(0);
+//			children = current.createChildren();
+//			if (children.isEmpty()) {
+//				System.out.println("unsuccessful"); // TODO: DEL
+//				break;
+//			}
+//			Collections.sort(children);
+//			current = children.get(0);
 		}
 
 		return current.collectPath();
@@ -61,7 +58,7 @@ public class Executor {
 		while (!current.isFinal()) {
 			closedSet.add(current);
 			openSet.remove(current);
-			children = current.createChildren();
+			children = current.createChildren(0);
 			children.removeAll(closedSet);
 			openSet.addAll(children);
 			if (openSet.isEmpty())
@@ -73,17 +70,39 @@ public class Executor {
 		return current.collectPath();
 	}
 
+//	this is ASTAR but with sets
 	private static List<State> executeUniform(State initial) {
-		return Collections.emptyList();
+		Set<State> closedSet = new HashSet<>();
+		Set<State> openSet = new HashSet<>();
+		Set<State> children;
+		State current = initial;
+
+		while (!current.isFinal()) {
+			closedSet.add(current);
+			openSet.remove(current);
+			children = current.createChildren();
+			children.removeAll(closedSet);
+			openSet.addAll(children);
+			if (openSet.isEmpty())
+				break;
+			current = Collections.min(openSet);
+			if ( openSet.size() >= 2000 ) {
+				List<State> t = new ArrayList<>(openSet);
+				t.sort(Comparator.naturalOrder());
+				openSet = new HashSet<>(t.subList(0, 1000));
+			}
+		}
+
+		return current.collectPath();
 	}
 
 	static Algorithm getAlgorithm(String algorithm) {
 		switch (algorithm) {
-			case Constants.ASTAR:
+			case ASTAR:
 				return Executor::executeAstar;
-			case Constants.GREEDY:
+			case GREEDY:
 				return Executor::executeGreedy;
-			case Constants.UNIFORM:
+			case UNIFORM:
 				return Executor::executeUniform;
 			default:
 				return null;

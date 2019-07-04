@@ -1,9 +1,6 @@
 package npuzzle.logic;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -41,8 +38,25 @@ public class State implements Comparable<State> {
 		return evaluation;
 	}
 
-	List<State> createChildren() {
+//
+	List<State> createChildren(int dummy) {
 		List<State> children = new ArrayList<>();
+		int n = Input.getInstance().getN();
+
+		if (!isEmptyOnTopEdge()) // UP
+			children.add(createChild(indexOfEmpty, indexOfEmpty - n));
+		if (!isEmptyOnBottomEdge()) // DOWN
+			children.add(createChild(indexOfEmpty, indexOfEmpty + n));
+		if (!isEmptyOnLeftEdge()) // LEFT
+			children.add(createChild(indexOfEmpty, indexOfEmpty - 1));
+		if (!isEmptyOnRightEdge()) // RIGHT
+			children.add(createChild(indexOfEmpty, indexOfEmpty + 1));
+
+		return children;
+	}
+
+	Set<State> createChildren() {
+		Set<State> children = new HashSet<>();
 		int n = Input.getInstance().getN();
 
 		if (!isEmptyOnTopEdge()) // UP
