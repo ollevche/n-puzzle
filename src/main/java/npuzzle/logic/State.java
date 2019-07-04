@@ -36,7 +36,8 @@ public class State implements Comparable<State> {
 
 	//	TODO: cache this <- where and how?
 	int evaluate() {
-		evaluation = evaluator.evaluate(this);
+		if (evaluation == -1)
+			evaluation = evaluator.evaluate(this);
 		return evaluation;
 	}
 
@@ -130,11 +131,7 @@ public class State implements Comparable<State> {
 	// TODO: fix compareTo
 	@Override
 	public int compareTo(@NonNull State o) {
-		if (evaluation == -1)
-			evaluate();
-		if (o.evaluation == -1)
-			o.evaluate();
-		return evaluation - o.evaluation;
+		return evaluate() - o.evaluate();
 	}
 
 	@Override public boolean equals(Object obj) {
