@@ -1,8 +1,13 @@
 package npuzzle.io;
 
-import java.util.List;
-
 import npuzzle.logic.State;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author dpozinen
@@ -14,16 +19,34 @@ import npuzzle.logic.State;
 public class Writer {
 
 	public static void write(List<State> states, boolean fast) {
-		if (fast)
-			writeFast(states);
-		else
-			writeSlow(states);
+		write(states, fast, null);
 		System.out.println("Path length:" + states.size());
 	}
 
+	public static void write(List<State> states, boolean fast, String filename) {
+		try {
+			if (!Objects.isNull(filename) && !Files.exists(Paths.get(filename)))
+				Files.createFile(Paths.get(filename));
+
+			if (fast)
+				writeFast(states, filename);
+			else
+				writeSlow(states, filename);
+
+			if (!Objects.isNull(filename))
+				Files.write(Paths.get(filename), ("Path length:" + states.size()).getBytes(), StandardOpenOption.APPEND);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public static void write(State state) {
-		StringBuilder rows = new StringBuilder();
+		System.out.println(createPrettyTiles(state));
+	}
+
+	private static StringBuilder createPrettyTiles(State state) {
 		int col = 0;
+		StringBuilder rows = new StringBuilder();
 
 		for (Integer tile : state.getTiles()) {
 			rows.append(String.format("%5s", String.valueOf(tile)));
@@ -34,30 +57,33 @@ public class Writer {
 				col = 0;
 			}
 		}
-		System.out.println(rows);
+		return rows;
 	}
 
-	private static void writeFast(List<State> states) {
+	private static void writeFast(List<State> states, String fileName) throws IOException {
 		StringBuilder sb = new StringBuilder();
 		for (State s : states)
 			sb.append(s).append("\n");
-		System.out.println(sb);
+		if (Objects.nonNull(fileName))
+			Files.write(Paths.get(fileName), sb.toString().getBytes());
+		else
+			System.out.println(sb);
 	}
 
 	// TODO: count proper offset
-	private static void writeSlow(List<State> states) {
+	private static void writeSlow(List<State> states, String filename) throws IOException {
 		int i = states.size();
-		int offset = 15;
-		String format = "%" + offset + "s\n";
-		String arrowFormat = "%" + (offset + 1) + "s\n";
+		StringBuilder sb = new StringBuilder();
 
 		for (State state : states) {
-			write(state);
-			if (--i > 0) {
-				System.out.printf(format, "|");
-				System.out.printf(format, "|");
-				System.out.printf(arrowFormat, "\\ /");
-			}
+			sb.append(createPrettyTiles(state));
+			if (--i > 0)
+				sb.append("\n\n");
 		}
+
+		if (Objects.isNull(filename))
+			System.out.println(sb);
+		else
+			Files.write(Paths.get(filename), sb.toString().getBytes());
 	}
 }
