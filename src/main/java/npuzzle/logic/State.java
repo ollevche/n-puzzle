@@ -1,40 +1,48 @@
 package npuzzle.logic;
 
-import java.util.*;
-
+import com.google.common.collect.Comparators;
+import npuzzle.io.Input;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import com.google.common.collect.Comparators;
-
-import npuzzle.io.Input;
+import java.util.*;
 
 // TODO: Solve the empty tile 0 or 9 problem.
 public class State implements Comparable<State> {
 
-	private List<Integer> tiles;
-	private int indexOfEmpty;
 	private final Evaluator.Heuristic evaluator;
-	private final State parent;
+	private List<Integer> tiles;
+	private State parent;
+	private int indexOfEmpty;
 	private int evaluation = -1;
+	private int pathSize;
 
 	public State(List<Integer> tiles, String heuristic) {
 		this.tiles = tiles;
 		this.indexOfEmpty = tiles.indexOf(0);
 		this.evaluator = Evaluator.getHeuristic(heuristic);
 		this.parent = null;
+		this.pathSize = 0;
 	}
 
-	public State(State other, State parent) {
+	private State(State other) {
 		this.tiles = new ArrayList<>(other.tiles);
 		this.indexOfEmpty = other.indexOfEmpty;
 		this.evaluator = other.evaluator;
-		this.parent = parent;
+		this.parent = other.parent;
+		this.pathSize = other.pathSize;
+	}
+
+	private static State childOf(State parent) {
+		State child = new State(parent);
+		child.parent = parent;
+		child.pathSize = parent.pathSize + 1;
+		return child;
 	}
 
 	//	TODO: cache this <- where and how?
-	int evaluate() {
+	private int evaluate() {
 		if (evaluation == -1)
-			evaluation = evaluator.evaluate(this);
+			evaluation = evaluator.evaluate(this) + pathSize;
 		return evaluation;
 	}
 
@@ -72,7 +80,7 @@ public class State implements Comparable<State> {
 	}
 
 	private State createChild(int i, int j) {
-		State child = new State(this, this);
+		State child = childOf(this);
 
 		child.tiles.set(i, child.tiles.get(j));
 		child.tiles.set(j, 0);
@@ -130,16 +138,8 @@ public class State implements Comparable<State> {
 	}
 
 	@SuppressWarnings("UnstableApiUsage")
-	boolean isFinal() {
-		return Comparators.isInOrder(tiles, Comparator.naturalOrder());
-	}
-
-	private boolean isRoot() {
-		return parent == null;
-	}
-
-	public List<Integer> getTiles() {
-		return tiles;
+	boolean isNotFinal() {
+		return !Comparators.isInOrder(tiles, Comparator.naturalOrder());
 	}
 
 	// TODO: fix compareTo
@@ -194,6 +194,10 @@ public class State implements Comparable<State> {
 	void incrementEvaluation() {
 		if (evaluation != -1)
 			evaluation++;
+	}
+
+	public List<Integer> getTiles() {
+		return tiles;
 	}
 
 }

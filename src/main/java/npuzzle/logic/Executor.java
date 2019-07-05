@@ -1,8 +1,8 @@
 package npuzzle.logic;
 
-import static npuzzle.utils.Constants.*;
-
 import java.util.*;
+
+import static npuzzle.utils.Constants.*;
 
 class Executor {
 
@@ -33,7 +33,7 @@ class Executor {
 		State current = initial;
 		List<State> children;
 
-		while (!current.isFinal()) {
+		while (current.isNotFinal()) {
 			closedSet.add(current);
 //			children = current.createChildren();
 //			if (children.isEmpty()) {
@@ -55,7 +55,7 @@ class Executor {
 		State current = initial;
 		List<State> children;
 
-		while (!current.isFinal()) {
+		while (current.isNotFinal()) {
 			closedSet.add(current);
 			openSet.remove(current);
 			children = current.createChildren(0);
@@ -77,7 +77,7 @@ class Executor {
 		Set<State> children;
 		State current = initial;
 
-		while (!current.isFinal()) {
+		while (current.isNotFinal()) {
 			closedSet.add(current);
 			openSet.remove(current);
 			children = current.createChildren();
