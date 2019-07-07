@@ -77,9 +77,8 @@ public class Input {
 		while (--nByN >= 0)
 			tiles.add(nByN);
 
-		do {
-			Collections.shuffle(tiles);
-		} while (!new State(tiles, MANHATTAN).isSolvable());
+		do Collections.shuffle(tiles);
+			while (!new State(tiles, MANHATTAN).isSolvable());
 	}
 
 	public boolean isRandom() {
