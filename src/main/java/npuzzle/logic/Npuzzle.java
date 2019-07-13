@@ -1,30 +1,44 @@
 package npuzzle.logic;
 
 import npuzzle.io.Input;
+import npuzzle.io.Reader;
 import npuzzle.io.Writer;
 
-public class Npuzzle {
+import java.util.Objects;
 
-	private Npuzzle() {
+public class Npuzzle implements Runnable {
 
+	private final Input input;
+
+	private Npuzzle(Input input) {
+		this.input = input;
 	}
 
-	public static boolean execute() {
-		State startingState = createStartingState();
-		Executor.Algorithm executor = Executor.getAlgorithm(Input.getInstance().getAlgorithm());
+	public static Npuzzle create(Input input) {
+		return new Npuzzle(input);
+	}
 
-		if (!startingState.isSolvable()) {
-			System.out.println("Sorry. This one is unsolvable.");
-			return false;
+	@Override
+	public void run() {
+
+//		use reader to populate the Input
+//		get the starting state from input
+//		get the executor from input
+
+		if (!Reader.createWith(input).fillInput()) {
+			Writer.write("Failed for Input:" + input);
+			return;
+		}
+
+		State startingState = State.createFrom(input.getTiles(), input.getHeuristic());
+		Executor.Algorithm executor = Objects.requireNonNull(Executor.getAlgorithm(input.getAlgorithm()));
+
+		if (startingState.isNotSolvable()) { // TODO: move this to the validator or somewhere else
+			Writer.write("Sorry. This one is unsolvable.");
+			return;
 		}
 
 		Writer.write(executor.execute(startingState), true);
-
-		return true;
-	}
-
-	private static State createStartingState() {
-		return new State(Input.getInstance().getTiles(), Input.getInstance().getHeuristic());
 	}
 
 }

@@ -1,12 +1,14 @@
 package npuzzle.io;
 
-import static npuzzle.utils.Constants.*;
+import npuzzle.utils.InvalidInputException;
+import org.apache.commons.cli.*;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.commons.cli.*;
-
-import npuzzle.utils.InvalidInputException;
+import static npuzzle.utils.Constants.*;
 
 /**
  * @author dpozinen
@@ -17,9 +19,17 @@ import npuzzle.utils.InvalidInputException;
 
 public class Reader {
 
+	private final Input input;
+	private final Validator validator;
 	private static Options options = prepareOptions();
 
-	private Reader() {
+	private Reader(Input input) {
+		this.input = input;
+		validator = Validator.create(input);
+	}
+
+	public static Reader createWith(Input input) {
+		return new Reader(input);
 	}
 
 	private static Options prepareOptions() {
@@ -33,10 +43,10 @@ public class Reader {
 		return options;
 	}
 
-	public static boolean readInput(String[] args) {
+	public boolean fillInput() {
 		try {
-			parseArgs(args);
-			if (!Input.getInstance().isRandom())
+			parseArgs(input.getArgs());
+			if (!input.isRandom())
 				readTiles();
 			return true;
 		} catch (IOException e) {
@@ -51,10 +61,9 @@ public class Reader {
 		return false;
 	}
 
-	private static void parseArgs(String[] args) throws ParseException {
+	private void parseArgs(String[] args) throws ParseException {
 		CommandLineParser parser = new DefaultParser();
 		CommandLine line = parser.parse(options, args);
-		Validator validator = new Validator();
 
 		validator.saveValidAlgorithm(line.getOptionValue(ALGORITHM));
 		validator.saveValidHeuristic(line.getOptionValue(HEURISTIC));
@@ -63,13 +72,12 @@ public class Reader {
 			validator.saveValidRandomArg(line.getOptionValue(RANDOM));
 	}
 
-	private static void readTiles() throws IOException {
+	private void readTiles() throws IOException {
 		String line;
 		InputStream inputStream;
-		Validator validator = new Validator();
 
-		if (Input.getInstance().hasFile())
-			inputStream = new BufferedInputStream(new FileInputStream(Input.getInstance().getFile()));
+		if (input.hasFile())
+			inputStream = new BufferedInputStream(new FileInputStream(input.getFile()));
 		else
 			inputStream = System.in;
 
@@ -78,7 +86,17 @@ public class Reader {
 				validator.validateLine(line);
 		}
 		validator.checkEnoughTiles();
-		validator.saveValidatedTiles();
+		validator.saveValidatedTiles(input);
+	}
+
+	public static List<Input> splitArgs(String[] args) {
+		List<Input> inputList = new ArrayList<>();
+		List<String> argParts = List.of(StringUtils.join(args, " ").split("\\|"));
+
+		for (String arg : argParts)
+			inputList.add(Input.fromArgs(arg.trim().split(" ")));
+
+		return inputList;
 	}
 
 }
