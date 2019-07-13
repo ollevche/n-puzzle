@@ -3,11 +3,11 @@ package npuzzle.utils;
 public class InvalidInputException extends RuntimeException {
 
 	public InvalidInputException(Error err) {
-		super(err.getErrorMsg());
+		super(err.toString());
 	}
 
 	public InvalidInputException(Error err, String s) {
-		super(err.getErrorMsg() + " " + s);
+		super(err + " " + s);
 	}
 
 }

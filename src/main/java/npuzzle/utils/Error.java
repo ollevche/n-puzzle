@@ -18,7 +18,8 @@ public enum Error {
 		this.errorMsg = errorMsg;
 	}
 
-	public String getErrorMsg() {
+	@Override
+	public String toString() {
 		return errorMsg;
 	}
 
