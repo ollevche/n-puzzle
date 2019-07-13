@@ -10,32 +10,30 @@ import static npuzzle.utils.Constants.MANHATTAN;
 
 public class Input {
 
+	private final String[] args;
+
 	private String file, algorithm, heuristic;
 	private int n;
 	private boolean isRandom;
 	private List<Integer> tiles;
 
-	private static Input instance;
-
-	private Input() {
-
+	private Input(String[] args) {
+		this.args = args;
 	}
 
-	public static Input getInstance() {
-		if (instance == null)
-			instance = new Input();
-		return instance;
+	static Input fromArgs(String[] args) {
+		return new Input(args);
 	}
 
-	public boolean hasFile() {
+	boolean hasFile() {
 		return file != null;
 	}
 
-	public String getFile() {
+	String getFile() {
 		return file;
 	}
 
-	public void setFile(String file) {
+	void setFile(String file) {
 		this.file = file;
 	}
 
@@ -43,7 +41,7 @@ public class Input {
 		return algorithm;
 	}
 
-	public void setAlgorithm(String algorithm) {
+	void setAlgorithm(String algorithm) {
 		this.algorithm = algorithm;
 	}
 
@@ -51,11 +49,11 @@ public class Input {
 		return heuristic;
 	}
 
-	public void setHeuristic(String heuristic) {
+	void setHeuristic(String heuristic) {
 		this.heuristic = heuristic;
 	}
 
-	public void setTilesAndN(List<Integer> tiles, int n) {
+	void setTilesAndN(List<Integer> tiles, int n) {
 		this.tiles = tiles;
 		this.n = n;
 	}
@@ -64,11 +62,7 @@ public class Input {
 		return new ArrayList<>(tiles);
 	}
 
-	public int getN() {
-		return n;
-	}
-
-	public void generateRandomTiles(int n) {
+	void generateRandomTiles(int n) {
 		this.n = n;
 		isRandom = true;
 		int nByN = n * n;
@@ -78,16 +72,20 @@ public class Input {
 			tiles.add(nByN);
 
 		do Collections.shuffle(tiles);
-			while (!new State(tiles, MANHATTAN).isSolvable());
+			while (State.createFrom(tiles, MANHATTAN).isNotSolvable());
 	}
 
-	public boolean isRandom() {
+	boolean isRandom() {
 		return isRandom;
+	}
+
+	String[] getArgs() {
+		return args;
 	}
 
 	@Override
 	public String toString() {
-		return String.format("Input: algorithm = %s; heuristic = %s; n = %d; isRandom = %b.", algorithm, heuristic, n, isRandom);
+		return String.format("Algorithm = %s; heuristic = %s; n = %d; isRandom = %b.", algorithm, heuristic, n, isRandom);
 	}
 
 }
