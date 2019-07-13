@@ -6,6 +6,12 @@ public class Constants {
 		throw new AssertionError();
 	}
 
+	/**
+	 * should be used everywhere, where it refers to an empty tile in state tiles
+	 * added to easily migrate when changing empty tile to 9
+	 */
+	public static final int EMPTY = 0;
+
 //	algorithms
 	public static final String GREEDY = "greedy";
 	public static final String UNIFORM = "uniform";
