@@ -14,16 +14,21 @@ import java.util.Objects;
  * @author ollevche
  * <p>
  * used to write program output
+ * public methods are synchronized to avoid multiple threads printing their input at the same time
  */
 
 public class Writer {
 
-	public static void write(List<State> states, boolean fast) {
+	public synchronized static void write(List<State> states, boolean fast) {
 		write(states, fast, null);
 		System.out.println("Path length:" + states.size());
 	}
 
-	public static void write(List<State> states, boolean fast, String filename) {
+	public synchronized static void write(String s) {
+		System.out.println(s);
+	}
+
+	public synchronized static void write(List<State> states, boolean fast, String filename) {
 		try {
 			if (!Objects.isNull(filename) && !Files.exists(Paths.get(filename)))
 				Files.createFile(Paths.get(filename));
@@ -40,7 +45,7 @@ public class Writer {
 		}
 	}
 
-	public static void write(State state) {
+	public synchronized static void write(State state) {
 		System.out.println(createPrettyTiles(state));
 	}
 
@@ -50,7 +55,7 @@ public class Writer {
 
 		for (Integer tile : state.getTiles()) {
 			rows.append(String.format("%5s", String.valueOf(tile)));
-			if (++col < Input.getInstance().getN()) {
+			if (++col < state.getN()) {
 				rows.append(" ");
 			} else {
 				rows.append("\n");
