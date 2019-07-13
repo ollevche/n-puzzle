@@ -1,29 +1,23 @@
 package npuzzle;
 
-import java.util.concurrent.TimeUnit;
-
-import com.google.common.base.Stopwatch;
-
 import npuzzle.io.Input;
 import npuzzle.io.Reader;
-import npuzzle.logic.Evaluator;
 import npuzzle.logic.Npuzzle;
+
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class App {
 
 	public static void main(String[] args) {
-		Stopwatch stopwatch = Stopwatch.createStarted();
+		List<Input> inputList = Reader.splitArgs(args);
+		ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(inputList.size());
 
-		if (!Reader.readInput(args))
-			return;
+		for (Input input : inputList)
+			executor.submit(Npuzzle.create(input));
 
-		System.out.println(Input.getInstance().toString());
-
-		Evaluator.createReferenceList();
-		if (!Npuzzle.execute())
-			return;
-
-		System.out.println("Executed successfully. Elapsed:" + stopwatch.elapsed(TimeUnit.MICROSECONDS));
+		executor.shutdown();
 	}
 
 }
