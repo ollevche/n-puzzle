@@ -1,38 +1,35 @@
 package npuzzle.logic;
 
-import static npuzzle.utils.Constants.MANHATTAN;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-
-import npuzzle.io.Input;
+import static npuzzle.utils.Constants.MANHATTAN;
 
 // TODO: add 2 more heuristic functions
-
-public class Evaluator {
-
-	private static List<Pair<Integer, Integer>> xyList;
+class Evaluator {
 
 	@FunctionalInterface
 	public interface Heuristic {
-		int evaluate(State state);
+
+		int evaluate(State state, int n, List<Pair<Integer, Integer>> xyGoalList);
+
 	}
 
-	private static int manhattan(State state) {
+	private static int manhattan(State state, int n, List<Pair<Integer, Integer>> xyGoalList) {
 		List<Integer> tiles = state.getTiles();
 		Integer tile;
-		int x, y, n = Input.getInstance().getN();
+		int x, y;
 		int stateEval = 0;
 
 		for (int index = 0; index < tiles.size(); index++) {
 			x = index % n;
 			y = index / n;
 			tile = tiles.get(index);
-			stateEval += Math.abs(x - xyList.get(tile).getKey()) + Math.abs(y - xyList.get(tile).getValue());
+			stateEval += Math.abs(x - xyGoalList.get(tile).getKey()) + Math.abs(y - xyGoalList.get(tile).getValue());
 		}
 		return stateEval;
 	}
@@ -46,9 +43,9 @@ public class Evaluator {
 		}
 	}
 
-	public static void createReferenceList() {
-		xyList = new ArrayList<>();
-		int n = Input.getInstance().getN(), nByN = n * n;
+	static List<Pair<Integer, Integer>> createReferenceList(int n) {
+		List<Pair<Integer, Integer>> xyList = new ArrayList<>();
+		int nByN = n * n;
 		int x = 0, y = 0, i = 0;
 
 		while (i < nByN) {
@@ -60,6 +57,7 @@ public class Evaluator {
 			x = 0;
 			y++;
 		}
-		xyList = Collections.unmodifiableList(xyList);
+		return Collections.unmodifiableList(xyList);
 	}
+
 }
