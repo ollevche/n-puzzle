@@ -20,10 +20,8 @@ public class Npuzzle implements Runnable {
 
 	@Override
 	public void run() {
-		if (!Reader.createWith(input).fillInput()) {
-			Writer.write("Failed for Input:" + input);
+		if (!Reader.createWith(input).fillInput())
 			return;
-		}
 
 		Executor.Algorithm executor = Objects.requireNonNull(Executor.getAlgorithm(input.getAlgorithm()));
 		Writer.write(executor.execute(input.getInitialState()), true);
