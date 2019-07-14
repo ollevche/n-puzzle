@@ -20,25 +20,13 @@ public class Npuzzle implements Runnable {
 
 	@Override
 	public void run() {
-
-//		use reader to populate the Input
-//		get the starting state from input
-//		get the executor from input
-
 		if (!Reader.createWith(input).fillInput()) {
 			Writer.write("Failed for Input:" + input);
 			return;
 		}
 
-		State startingState = State.createFrom(input.getTiles(), input.getHeuristic());
 		Executor.Algorithm executor = Objects.requireNonNull(Executor.getAlgorithm(input.getAlgorithm()));
-
-		if (startingState.isNotSolvable()) { // TODO: move this to the validator or somewhere else
-			Writer.write("Sorry. This one is unsolvable.");
-			return;
-		}
-
-		Writer.write(executor.execute(startingState), true);
+		Writer.write(executor.execute(input.getInitialState()), true);
 	}
 
 }

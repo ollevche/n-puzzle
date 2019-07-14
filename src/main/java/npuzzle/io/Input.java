@@ -16,6 +16,7 @@ public class Input {
 	private int n;
 	private boolean isRandom;
 	private List<Integer> tiles;
+	private State initialState;
 
 	private Input(String[] args) {
 		this.args = args;
@@ -45,7 +46,7 @@ public class Input {
 		this.algorithm = algorithm;
 	}
 
-	public String getHeuristic() {
+	String getHeuristic() {
 		return heuristic;
 	}
 
@@ -58,7 +59,7 @@ public class Input {
 		this.n = n;
 	}
 
-	public List<Integer> getTiles() {
+	List<Integer> getTiles() {
 		return new ArrayList<>(tiles);
 	}
 
@@ -81,6 +82,14 @@ public class Input {
 
 	String[] getArgs() {
 		return args;
+	}
+
+	public State getInitialState() {
+		return initialState;
+	}
+
+	void setInitialState(State initial) {
+		this.initialState = initial;
 	}
 
 	@Override
