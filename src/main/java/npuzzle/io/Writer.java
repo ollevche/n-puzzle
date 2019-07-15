@@ -14,18 +14,28 @@ import java.util.Objects;
  * @author ollevche
  * <p>
  * used to write program output
- * public methods are synchronized to avoid multiple threads printing their input at the same time
+ * public methods are synchronized to avoid multiple threads printing their output at the same time
  */
 
 public class Writer {
 
+	public synchronized static void write(Input input, Output output, boolean fast, String file) {
+		System.out.println(input);
+		write(output.getPath(), fast, file);
+		System.out.println(output);
+	}
+
+	public synchronized static void write(Input input, Output output, boolean fast) {
+		write(input, output, fast, null);
+	}
+
+	public synchronized static void write(Input input, Output output) {
+		write(input, output, true);
+	}
+
 	public synchronized static void write(List<State> states, boolean fast) {
 		write(states, fast, null);
 		System.out.println("Path length:" + states.size());
-	}
-
-	public synchronized static void write(String s) {
-		System.out.println(s);
 	}
 
 	public synchronized static void write(List<State> states, boolean fast, String filename) {
@@ -47,22 +57,6 @@ public class Writer {
 
 	public synchronized static void write(State state) {
 		System.out.println(createPrettyTiles(state));
-	}
-
-	private static StringBuilder createPrettyTiles(State state) {
-		int col = 0;
-		StringBuilder rows = new StringBuilder();
-
-		for (Integer tile : state.getTiles()) {
-			rows.append(String.format("%5s", String.valueOf(tile)));
-			if (++col < state.getN()) {
-				rows.append(" ");
-			} else {
-				rows.append("\n");
-				col = 0;
-			}
-		}
-		return rows;
 	}
 
 	private static void writeFast(List<State> states, String fileName) throws IOException {
@@ -91,4 +85,21 @@ public class Writer {
 		else
 			Files.write(Paths.get(filename), sb.toString().getBytes());
 	}
+
+	private static StringBuilder createPrettyTiles(State state) {
+		int col = 0;
+		StringBuilder rows = new StringBuilder();
+
+		for (Integer tile : state.getTiles()) {
+			rows.append(String.format("%5s", String.valueOf(tile)));
+			if (++col < state.getN()) {
+				rows.append(" ");
+			} else {
+				rows.append("\n");
+				col = 0;
+			}
+		}
+		return rows;
+	}
+
 }

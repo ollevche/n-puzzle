@@ -1,8 +1,7 @@
 package npuzzle.logic;
 
-import npuzzle.io.Input;
-import npuzzle.io.Reader;
-import npuzzle.io.Writer;
+import com.google.common.base.Stopwatch;
+import npuzzle.io.*;
 
 import java.util.Objects;
 
@@ -20,11 +19,15 @@ public class Npuzzle implements Runnable {
 
 	@Override
 	public void run() {
+		Stopwatch stopwatch = Stopwatch.createStarted();
+
 		if (!Reader.createWith(input).fillInput())
 			return;
 
 		Executor.Algorithm executor = Objects.requireNonNull(Executor.getAlgorithm(input.getAlgorithm()));
-		Writer.write(executor.execute(input.getInitialState()), true);
+		Output output = executor.execute(input.getInitialState());
+		output.setStopwatch(stopwatch);
+		Writer.write(input, output, true);
 	}
 
 }

@@ -1,5 +1,7 @@
 package npuzzle.logic;
 
+import npuzzle.io.Output;
+
 import java.util.*;
 
 import static npuzzle.utils.Constants.*;
@@ -12,7 +14,7 @@ class Executor {
 		 * @param initial - the Starting/Initial State from input
 		 * @return all parents chained together -> form a list of all moves made to achieve the final state
 		 */
-		List<State> execute(State initial);
+		Output execute(State initial);
 	}
 
 	/**
@@ -28,50 +30,13 @@ class Executor {
 	 *
 	 * @see Algorithm#execute(State)
 	 */
-	private static List<State> executeGreedy(State initial) {
-		List<State> closedSet = new ArrayList<>();
-		State current = initial;
-		List<State> children;
-
-		while (current.isNotFinal()) {
-			closedSet.add(current);
-//			children = current.createChildren();
-//			if (children.isEmpty()) {
-//				System.out.println("unsuccessful"); // TODO: DEL
-//				break;
-//			}
-//			Collections.sort(children);
-//			current = children.get(0);
-		}
-
-		return current.collectPath();
+	private static Output executeGreedy(State initial) {
+		return Output.create(0,0,Collections.emptyList());
 	}
 
-//	TODO: add g(x)
-//	TODO: test
-	private static List<State> executeAstar(State initial) {
-		List<State> closedSet = new ArrayList<>();
-		List<State> openSet = new ArrayList<>();
-		State current = initial;
-		List<State> children;
-
-		while (current.isNotFinal()) {
-			closedSet.add(current);
-			openSet.remove(current);
-			children = current.createChildren(0);
-			children.removeAll(closedSet);
-			openSet.addAll(children);
-			if (openSet.isEmpty())
-				break;
-			Collections.sort(openSet);
-			current = openSet.get(0);
-		}
-
-		return current.collectPath();
-	}
-
-//	this is ASTAR but with sets
-	private static List<State> executeUniform(State initial) {
+//	TODO: see if maxNumeberOfStates is logically correct
+	private static Output executeAstar(State initial) {
+		int everInOpenSet = 1, maxNumberOfSates = 1;
 		Set<State> closedSet = new HashSet<>();
 		Set<State> openSet = new HashSet<>();
 		Set<State> children;
@@ -81,8 +46,10 @@ class Executor {
 			closedSet.add(current);
 			openSet.remove(current);
 			children = current.createChildren();
+			maxNumberOfSates += children.size();
 			children.removeAll(closedSet);
 			openSet.addAll(children);
+			everInOpenSet += children.size();
 			if (openSet.isEmpty())
 				break;
 			current = Collections.min(openSet);
@@ -93,7 +60,11 @@ class Executor {
 			}
 		}
 
-		return current.collectPath();
+		return Output.create(everInOpenSet, maxNumberOfSates, current.collectPath());
+	}
+
+	private static Output executeUniform(State initial) {
+		return Output.create(0,0,Collections.emptyList());
 	}
 
 	static Algorithm getAlgorithm(String algorithm) {
