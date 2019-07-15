@@ -17,8 +17,8 @@ public class State implements Comparable<State> {
 	private final List<Integer> tiles;
 	private final int n;
 	private int evaluation;
-	private State parent;
 	private int pathSize;
+	private State parent;
 
 	private State(List<Integer> tiles, String heuristic) {
 		this.tiles = tiles;
@@ -55,23 +55,6 @@ public class State implements Comparable<State> {
 		return evaluation;
 	}
 
-	// TODO: remove after testing if it ever gives better results. Currently it doesn't
-	List<State> createChildren(int dummy) {
-		List<State> children = new ArrayList<>();
-		int indexOfEmpty = tiles.indexOf(EMPTY);
-
-		if (Utils.canMoveUp(indexOfEmpty, n)) // UP
-			children.add(createChild(indexOfEmpty, indexOfEmpty - n));
-		if (Utils.canMoveDown(indexOfEmpty, n)) // DOWN
-			children.add(createChild(indexOfEmpty, indexOfEmpty + n));
-		if (Utils.canMoveLeft(indexOfEmpty, n)) // LEFT
-			children.add(createChild(indexOfEmpty, indexOfEmpty - 1));
-		if (Utils.canMoveRight(indexOfEmpty, n)) // RIGHT
-			children.add(createChild(indexOfEmpty, indexOfEmpty + 1));
-
-		return children;
-	}
-
 	Set<State> createChildren() {
 		Set<State> children = new HashSet<>();
 		int indexOfEmpty = tiles.indexOf(EMPTY);
@@ -97,6 +80,7 @@ public class State implements Comparable<State> {
 		return child;
 	}
 
+//	TODO: re-implement
 	public boolean isNotSolvable() {
 		return Utils.isNotSolvable(tiles, n);
 	}
@@ -110,20 +94,21 @@ public class State implements Comparable<State> {
 		return path;
 	}
 
+//	TODO: re-implement
 	@SuppressWarnings("UnstableApiUsage")
 	boolean isNotFinal() {
 		return !Comparators.isInOrder(tiles, Comparator.naturalOrder());
 	}
 
 	/**
-	 * does not follow the contract between {@link State#equals}
+	 * violates the contract between {@link #equals}
 	 */
 	@Override public int compareTo(@NonNull State o) {
 		return Integer.compare(evaluate(), o.evaluate());
 	}
 
 	/**
-	 * does not follow the contract between {@link State#compareTo}
+	 * violates the contract between {@link #compareTo}
 	 */
 	@Override public boolean equals(Object obj) {
 		if (obj != null && obj.getClass().equals(State.class))

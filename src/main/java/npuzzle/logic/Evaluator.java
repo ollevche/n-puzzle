@@ -14,9 +14,7 @@ class Evaluator {
 
 	@FunctionalInterface
 	public interface Heuristic {
-
 		int evaluate(State state, int n, List<Pair<Integer, Integer>> xyGoalList);
-
 	}
 
 	private static int manhattan(State state, int n, List<Pair<Integer, Integer>> xyGoalList) {
@@ -34,7 +32,7 @@ class Evaluator {
 		return stateEval;
 	}
 
-	public static Heuristic getHeuristic(String heuristic) {
+	static Heuristic getHeuristic(String heuristic) {
 		switch (heuristic) {
 			case MANHATTAN:
 				return Evaluator::manhattan;
