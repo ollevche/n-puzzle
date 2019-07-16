@@ -4,6 +4,7 @@ import npuzzle.logic.State;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
@@ -11,18 +12,28 @@ import java.util.Objects;
 
 /**
  * @author dpozinen
- * @author ollevche
  * <p>
  * used to write program output
  * public methods are synchronized to avoid multiple threads printing their output at the same time
  */
 
+// TODO: refactor
 public class Writer {
 
-	public synchronized static void write(Input input, Output output, boolean fast, String file) {
-		System.out.println(input);
-		write(output.getPath(), fast, file);
-		System.out.println(output);
+	public synchronized static void write(Input input, Output output, boolean fast, String filename) {
+		if (Objects.isNull(filename)) {
+			System.out.println(input);
+			write(output.getPath(), fast, filename);
+			System.out.println(input);
+		} else
+			try {
+				Path p = Paths.get(filename);
+				Files.write(p, input.toString().getBytes());
+				write(output.getPath(), fast, filename);
+				Files.write(p, output.toString().getBytes());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 	}
 
 	public synchronized static void write(Input input, Output output, boolean fast) {
@@ -33,27 +44,18 @@ public class Writer {
 		write(input, output, true);
 	}
 
-	public synchronized static void write(List<State> states, boolean fast) {
-		write(states, fast, null);
-		System.out.println("Path length:" + states.size());
-	}
-
-	public synchronized static void write(List<State> states, boolean fast, String filename) {
+	public synchronized static void write(List<State> states, boolean fast, String filename)
+	{
 		try {
-			if (!Objects.isNull(filename) && !Files.exists(Paths.get(filename)))
-				Files.createFile(Paths.get(filename));
-
 			if (fast)
 				writeFast(states, filename);
 			else
 				writeSlow(states, filename);
-
-			if (!Objects.isNull(filename))
-				Files.write(Paths.get(filename), ("Path length:" + states.size()).getBytes(), StandardOpenOption.APPEND);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+
 
 	public synchronized static void write(State state) {
 		System.out.println(createPrettyTiles(state));

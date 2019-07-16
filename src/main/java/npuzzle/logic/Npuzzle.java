@@ -27,7 +27,7 @@ public class Npuzzle implements Runnable {
 		Executor.Algorithm executor = Objects.requireNonNull(Executor.getAlgorithm(input.getAlgorithm()));
 		Output output = executor.execute(input.getInitialState());
 		output.setStopwatch(stopwatch);
-		Writer.write(input, output, true);
+		Writer.write(input, output);
 	}
 
 }
