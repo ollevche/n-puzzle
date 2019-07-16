@@ -242,6 +242,9 @@ public class Reader {
 				case HAMMING:
 					heuristic = HAMMING;
 					break;
+				case EUCLIDIAN:
+					heuristic = EUCLIDIAN;
+					break;
 				default:
 					heuristic = StringUtils.EMPTY;
 			}

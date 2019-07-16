@@ -5,8 +5,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 
-import static npuzzle.utils.Constants.HAMMING;
-import static npuzzle.utils.Constants.MANHATTAN;
+import static npuzzle.utils.Constants.*;
 
 // TODO: add 2 more heuristic functions
 class Evaluator {
@@ -39,6 +38,22 @@ class Evaluator {
 		return stateEval;
 	}
 
+	private static int euclidian(State state, int n) {
+		List<Pair<Integer, Integer>> xyList = xyListMap.get(n);
+		List<Integer> tiles = state.getTiles();
+		Integer tile;
+		int x, y;
+		int stateEval = 0;
+
+		for (int index = 0; index < tiles.size(); index++) {
+			x = index % n;
+			y = index / n;
+			tile = tiles.get(index);
+			stateEval += Math.sqrt(Math.pow(x - xyList.get(tile).getKey(), 2) + Math.pow(y - xyList.get(tile).getValue(), 2));
+		}
+		return stateEval;
+	}
+
 //	Counts how many tiles are not in the correct place
 	private static int hamming(State state, int n) {
 
@@ -51,6 +66,8 @@ class Evaluator {
 				return Evaluator::manhattan;
 			case HAMMING:
 				return Evaluator::hamming;
+			case EUCLIDIAN:
+				return Evaluator::euclidian;
 			default:
 				return null;
 		}
