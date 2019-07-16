@@ -20,6 +20,10 @@ import java.util.Objects;
 // TODO: refactor
 public class Writer {
 
+	public synchronized static void write(Input input, Output output, boolean fast, boolean toFile) {
+		write(input, output, fast, Integer.toString(input.hashCode()));
+	}
+
 	public synchronized static void write(Input input, Output output, boolean fast, String filename) {
 		if (Objects.isNull(filename)) {
 			System.out.println(input);
@@ -28,9 +32,9 @@ public class Writer {
 		} else
 			try {
 				Path p = Paths.get(filename);
-				Files.write(p, input.toString().getBytes());
+				Files.write(p, (input.toString() + "\n").getBytes());
 				write(output.getPath(), fast, filename);
-				Files.write(p, output.toString().getBytes());
+				Files.write(p, output.toString().getBytes(), StandardOpenOption.APPEND);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -66,7 +70,7 @@ public class Writer {
 		for (State s : states)
 			sb.append(s).append("\n");
 		if (Objects.nonNull(fileName))
-			Files.write(Paths.get(fileName), sb.toString().getBytes());
+			Files.write(Paths.get(fileName), sb.toString().getBytes(), StandardOpenOption.APPEND);
 		else
 			System.out.println(sb);
 	}
@@ -85,7 +89,7 @@ public class Writer {
 		if (Objects.isNull(filename))
 			System.out.println(sb);
 		else
-			Files.write(Paths.get(filename), sb.toString().getBytes());
+			Files.write(Paths.get(filename), sb.toString().getBytes(), StandardOpenOption.APPEND);
 	}
 
 	private static StringBuilder createPrettyTiles(State state) {
