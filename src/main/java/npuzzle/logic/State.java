@@ -1,7 +1,6 @@
 package npuzzle.logic;
 
 import com.google.common.collect.Comparators;
-import org.apache.commons.lang3.tuple.Pair;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.*;
@@ -12,7 +11,6 @@ import static npuzzle.utils.Constants.EMPTY;
 // TODO: think of ways to reduce number of fields
 public class State implements Comparable<State> {
 
-	private final List<Pair<Integer, Integer>> xyGoalList;
 	private final Evaluator.Heuristic evaluator;
 	private final List<Integer> tiles;
 	private final int n;
@@ -26,7 +24,6 @@ public class State implements Comparable<State> {
 		this.parent = null;
 		this.pathSize = 0;
 		this.n = (int) Math.sqrt(tiles.size());
-		xyGoalList = Evaluator.createReferenceList(n);
 	}
 
 	public static State createFrom(List<Integer> tiles, String heuristic) {
@@ -39,7 +36,6 @@ public class State implements Comparable<State> {
 		this.parent = other.parent;
 		this.pathSize = other.pathSize;
 		this.n = other.n;
-		this.xyGoalList = other.xyGoalList;
 	}
 
 	private static State childOf(State parent) {
@@ -51,7 +47,7 @@ public class State implements Comparable<State> {
 
 	private int evaluate() {
 		if (evaluation == 0)
-			evaluation = evaluator.evaluate(this, n, xyGoalList) + pathSize;
+			evaluation = evaluator.evaluate(this, n) + pathSize;
 		return evaluation;
 	}
 

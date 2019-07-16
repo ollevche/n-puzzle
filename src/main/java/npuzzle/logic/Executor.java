@@ -34,7 +34,7 @@ class Executor {
 		return Output.create(0,0,Collections.emptyList());
 	}
 
-//	TODO: see if maxNumeberOfStates is logically correct
+//	TODO: see if maxNumberOfStates is logically correct
 	private static Output executeAstar(State initial) {
 		int everInOpenSet = 1, maxNumberOfSates = 1;
 		Set<State> closedSet = new HashSet<>();
