@@ -5,6 +5,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 
+import static npuzzle.utils.Constants.HAMMING;
 import static npuzzle.utils.Constants.MANHATTAN;
 
 // TODO: add 2 more heuristic functions
@@ -38,10 +39,18 @@ class Evaluator {
 		return stateEval;
 	}
 
+//	Counts how many tiles are not in the correct place
+	private static int hamming(State state, int n) {
+
+		return 0;
+	}
+
 	static Heuristic getHeuristic(String heuristic) {
 		switch (heuristic) {
 			case MANHATTAN:
 				return Evaluator::manhattan;
+			case HAMMING:
+				return Evaluator::hamming;
 			default:
 				return null;
 		}

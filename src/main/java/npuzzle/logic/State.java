@@ -46,8 +46,10 @@ public class State implements Comparable<State> {
 	}
 
 	private int evaluate() {
-		if (evaluation == 0)
+		if (evaluation == 0 && evaluator != null)
 			evaluation = evaluator.evaluate(this, n) + pathSize;
+		else if (evaluation == 0)
+			evaluation = pathSize;
 		return evaluation;
 	}
 

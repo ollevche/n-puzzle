@@ -239,9 +239,15 @@ public class Reader {
 				case MANHATTAN:
 					heuristic = MANHATTAN;
 					break;
+				case HAMMING:
+					heuristic = HAMMING;
+					break;
 				default:
-					throw new InvalidInputException(Error.ARG_NOT_FOUND, undef);
+					heuristic = StringUtils.EMPTY;
 			}
+
+			if (heuristic.isEmpty() && !input.getAlgorithm().equals(UNIFORM))
+				throw new InvalidInputException(Error.ARG_NOT_FOUND, undef);
 
 			input.setHeuristic(heuristic);
 		}
