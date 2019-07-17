@@ -27,8 +27,8 @@ public class Writer {
 	public synchronized static void write(Input input, Output output, boolean fast, String filename) {
 		if (Objects.isNull(filename)) {
 			System.out.println(input);
-			write(output.getPath(), fast, filename);
-			System.out.println(input);
+			write(output.getPath(), fast, null);
+			System.out.println(output);
 		} else
 			try {
 				Path p = Paths.get(filename);
