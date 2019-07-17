@@ -37,7 +37,7 @@ public class Output {
 	@Override public String toString() {
 		return "Number of states ever in the opened set (complexity in time): " + everInOpenSet
 				+ ".\nMaximum number of states ever represented in memory at the same time (complexity in size): " + maxNumberOfSates
-				+ ".\nNumber of moves required to transition from the initial state to the final state: " + path.size()
+				+ ".\nNumber of moves required to transition from the initial state to the final state: " + (path.size() - 1)
 				+ ".\nTotal time elapsed: " + stopwatch;
 	}
 
