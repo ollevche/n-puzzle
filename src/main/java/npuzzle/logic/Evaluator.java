@@ -7,7 +7,6 @@ import java.util.*;
 
 import static npuzzle.utils.Constants.*;
 
-// TODO: add 2 more heuristic functions
 class Evaluator {
 
 	private static final Map<Integer, List<Pair<Integer, Integer>>> xyListMap = new HashMap<>();

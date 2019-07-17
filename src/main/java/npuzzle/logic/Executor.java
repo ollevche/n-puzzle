@@ -63,8 +63,28 @@ class Executor {
 		return Output.create(everInOpenSet, maxNumberOfSates, current.collectPath());
 	}
 
+//	TODO: maybe fix the fact that these are almost identical??
 	private static Output executeUniform(State initial) {
-		return Output.create(0,0,Collections.emptyList());
+		int everInOpenSet = 1, maxNumberOfSates = 1;
+		Set<State> closedSet = new HashSet<>();
+		Set<State> openSet = new HashSet<>();
+		Set<State> children;
+		State current = initial;
+
+		while (current.isNotFinal()) {
+			closedSet.add(current);
+			openSet.remove(current);
+			children = current.createChildren();
+			maxNumberOfSates += children.size();
+			children.removeAll(closedSet);
+			openSet.addAll(children);
+			everInOpenSet += children.size();
+			if (openSet.isEmpty())
+				break;
+			current = Collections.min(openSet);
+		}
+
+		return Output.create(everInOpenSet, maxNumberOfSates, current.collectPath());
 	}
 
 	static Algorithm getAlgorithm(String algorithm) {

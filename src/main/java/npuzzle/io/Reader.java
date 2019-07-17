@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,7 +41,7 @@ public class Reader {
 		Options options = new Options();
 
 		options.addRequiredOption("a", ALGORITHM, true, ALGORITHM_DESCRIPTION);
-		options.addRequiredOption("h", HEURISTIC, true, HEURISTIC_DESCRIPTION);
+		options.addOption("h", HEURISTIC, true, HEURISTIC_DESCRIPTION);
 		options.addOption("f", FILE, true, FILE_DESCRIPTION);
 		options.addOption("r", RANDOM, true, RANDOM_DESCRIPTION);
 
@@ -234,6 +235,7 @@ public class Reader {
 
 		void saveValidHeuristic(String undef) {
 			String heuristic;
+			undef = undef == null ? "" : undef;
 
 			switch (undef.trim().toLowerCase()) {
 				case MANHATTAN:
