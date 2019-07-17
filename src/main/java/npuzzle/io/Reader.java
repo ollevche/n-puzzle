@@ -49,6 +49,8 @@ public class Reader {
 
 	public boolean fillInput() {
 		try {
+			if (input.getArgs() == null)
+				return true;
 			parseArgs(input.getArgs());
 			if (!input.isRandom())
 				readTiles();
