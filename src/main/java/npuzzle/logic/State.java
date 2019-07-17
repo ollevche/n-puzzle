@@ -119,7 +119,7 @@ public class State implements Comparable<State> {
 	}
 
 	@Override public String toString() {
-		return tiles.toString();
+		return tiles.toString() + " evaluation: " + evaluation;
 	}
 
 	public List<Integer> getTiles() {
