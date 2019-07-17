@@ -22,8 +22,21 @@ public class Input {
 		this.args = args;
 	}
 
+	private Input(List<Integer> tiles, int n, String algorithm, String heuristic, State initialState) {
+		this.tiles = tiles;
+		this.n = n;
+		this.algorithm = algorithm;
+		this.heuristic = heuristic;
+		this.initialState = initialState;
+		this.args = null;
+	}
+
 	static Input fromArgs(String[] args) {
 		return new Input(args);
+	}
+
+	public static Input create(List<Integer> tiles, int n, String algorithm, String heuristic) {
+		return new Input(tiles, n, algorithm, heuristic, State.createFrom(tiles, heuristic));
 	}
 
 	boolean hasFile() {
