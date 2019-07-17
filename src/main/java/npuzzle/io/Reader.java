@@ -8,7 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -244,8 +243,8 @@ public class Reader {
 				case HAMMING:
 					heuristic = HAMMING;
 					break;
-				case EUCLIDIAN:
-					heuristic = EUCLIDIAN;
+				case EUCLIDEAN:
+					heuristic = EUCLIDEAN;
 					break;
 				default:
 					heuristic = StringUtils.EMPTY;

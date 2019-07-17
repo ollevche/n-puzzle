@@ -20,7 +20,7 @@ public class Constants {
 //	heuristics
 	public static final String MANHATTAN = "manhattan";
 	public static final String HAMMING = "hamming";
-	public static final String EUCLIDIAN = "euclidian";
+	public static final String EUCLIDEAN = "euclidean";
 
 //	options
 	public static final String ALGORITHM = "algorithm";

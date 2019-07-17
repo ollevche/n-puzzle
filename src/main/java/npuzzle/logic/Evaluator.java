@@ -23,7 +23,7 @@ class Evaluator {
 
 	private static int manhattan(State state, int n) {
 		List<Pair<Integer, Integer>> xyList = xyListMap.get(n);
-		List<Integer> tiles = state.getTiles();
+		List<? extends Integer> tiles = state.getTiles();
 		Integer tile;
 		int x, y;
 		int stateEval = 0;
@@ -37,9 +37,9 @@ class Evaluator {
 		return stateEval;
 	}
 
-	private static int euclidian(State state, int n) {
+	private static int euclidean(State state, int n) {
 		List<Pair<Integer, Integer>> xyList = xyListMap.get(n);
-		List<Integer> tiles = state.getTiles();
+		List<? extends Integer> tiles = state.getTiles();
 		Integer tile;
 		int x, y;
 		int stateEval = 0;
@@ -65,8 +65,8 @@ class Evaluator {
 				return Evaluator::manhattan;
 			case HAMMING:
 				return Evaluator::hamming;
-			case EUCLIDIAN:
-				return Evaluator::euclidian;
+			case EUCLIDEAN:
+				return Evaluator::euclidean;
 			default:
 				return null;
 		}
