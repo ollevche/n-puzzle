@@ -26,6 +26,42 @@ public class State implements Comparable<State> {
 		this.n = (int) Math.sqrt(tiles.size());
 	}
 
+	public static State createFinal(int n) {
+		int tileNum = 0, capacity = n * n;
+		List <Integer> tiles = new ArrayList<>(Collections.nCopies(capacity, 0));
+
+		int i = 0, j = -1;
+		boolean isDecrement = false, isMainI = false;
+
+		while (tileNum + 1 < capacity) {
+			System.out.printf("i = %d, j = %d, tileNum = %d%n", i, j, tileNum);
+
+			int change = isDecrement ? -1: 1;
+			if (isMainI)
+				i += change;
+			else
+				j += change;
+
+			tileNum++;
+
+			tiles.set(i * n + j, tileNum);
+			System.out.printf("tiles.set(%d * %d + %d = [%d], %d)%n", i, n, j, i * n + j,tileNum);
+
+
+			if ((isDecrement && main == 0) || (!isDecrement && main == n - 1)) {
+				isMainI = !isMainI;
+				main = isMainI ? i: j;
+				System.out.printf("changed isMainI to %b%n", isMainI);
+				if ((isDecrement && main == 0) || (!isDecrement && main == n - 1))
+					isDecrement = !isDecrement;
+					System.out.printf("changed isDecrement to %b%n", isDecrement);
+			}
+
+		}
+
+		return new State(tiles, "invalid");
+	}
+
 	public static State createFrom(List<Integer> tiles, String heuristic) {
 		return new State(tiles, heuristic);
 	}

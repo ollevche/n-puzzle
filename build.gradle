@@ -9,7 +9,7 @@
 plugins {
     // Apply the java plugin to add support for Java
     id 'java'
-
+    id 'idea'
     // Apply the application plugin to add support for building an application
     id 'application'
 }
@@ -45,5 +45,6 @@ dependencies {
 mainClassName = 'npuzzle.App'
 // Application Args
 run {
-    args = [ 'file(C:\\Users\\Dariy\\Documents\\Code\\N-puzzle\\src\\main\\resources\\testInput.txt)' ]
+    standardInput = System.in
+    args = [ '-a astar -h manhattan | -a astar -h manhattan' ]
 }

@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -101,7 +102,7 @@ public class Reader {
 
 	public static List<Input> splitArgs(String[] args) {
 		List<Input> inputList = new ArrayList<>();
-		List<String> argParts = List.of(StringUtils.join(args, " ").split("\\|"));
+		List<String> argParts = Arrays.asList(StringUtils.join(args, " ").split("\\|"));
 
 		for (String arg : argParts)
 			inputList.add(Input.fromArgs(arg.trim().split(" ")));
@@ -174,7 +175,7 @@ public class Reader {
 		}
 
 		List<String> splitLineAndRemoveComments(String line) {
-			List<String> elements = List.of(line.split("\\s+"));
+			List<String> elements = Arrays.asList(line.split("\\s+"));
 			return extractPartsBeforeComment(elements);
 		}
 
