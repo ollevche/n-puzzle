@@ -27,40 +27,88 @@ public class State implements Comparable<State> {
 	}
 
 	public static State createFinal(int n) {
-		int tileNum = 0, capacity = n * n;
+        int tileNum = 1, capacity = n * n;
 		List <Integer> tiles = new ArrayList<>(Collections.nCopies(capacity, 0));
 
-		int i = 0, j = -1;
-		boolean isDecrement = false, isMainI = false;
+        int minI = 0, minJ = 0, maxI = n - 1, maxJ = n - 1;
+        int nextMinI = minI, nextMinJ = minJ, nextMaxI = maxI, nextMaxJ = maxJ;
 
-		while (tileNum + 1 < capacity) {
-			System.out.printf("i = %d, j = %d, tileNum = %d%n", i, j, tileNum);
+        while (tileNum < capacity) {
 
-			int change = isDecrement ? -1: 1;
-			if (isMainI)
-				i += change;
-			else
-				j += change;
+            minI = nextMinI;
+            maxJ = nextMaxJ;
+            maxI = nextMaxI;
+            minJ = nextMinJ;
 
-			tileNum++;
+            for (int j = minJ; j < maxJ; j++) {
+                tiles.set(minI * n + j, tileNum);
+                tileNum++;
+            }
+            nextMinI++;
 
-			tiles.set(i * n + j, tileNum);
-			System.out.printf("tiles.set(%d * %d + %d = [%d], %d)%n", i, n, j, i * n + j,tileNum);
+            for (int i = minI; i < maxI; i++) {
+                tiles.set(i * n + maxJ, tileNum);
+                tileNum++;
+            }
+            nextMaxJ--;
 
+            for (int j = maxJ; j > minJ; j--) {
+                tiles.set(maxI * n + j, tileNum);
+                tileNum++;
+            }
+            nextMaxI--;
 
-			if ((isDecrement && main == 0) || (!isDecrement && main == n - 1)) {
-				isMainI = !isMainI;
-				main = isMainI ? i: j;
-				System.out.printf("changed isMainI to %b%n", isMainI);
-				if ((isDecrement && main == 0) || (!isDecrement && main == n - 1))
-					isDecrement = !isDecrement;
-					System.out.printf("changed isDecrement to %b%n", isDecrement);
+            for (int i = maxI; i > minI; i--) {
+                tiles.set(i * n + minJ, tileNum);
+                tileNum++;
 			}
+            nextMinJ++;
 
 		}
 
 		return new State(tiles, "invalid");
 	}
+
+//	public static State createFinal(int n) {
+//		int tileNum = 0, capacity = n * n;
+//		List <Integer> tiles = new ArrayList<>(Collections.nCopies(capacity, 0));
+//
+//		int i = 0, j = -1;
+//		boolean isDecrement = false, isMainI = false;
+//		int min = 0, max = n -1;
+//
+//		while (tileNum + 1 < capacity) {
+//			int change = isDecrement ? -1: 1;
+//			if (isMainI)
+//				i += change;
+//			else
+//				j += change;
+//
+//			tileNum++;
+//
+//			System.out.printf("i = %d, j = %d, tileNum = %d, min = %d, max = %d%n", i, j, tileNum, min, max);
+//			tiles.set(i * n + j, tileNum);
+//			System.out.printf("tiles.set(%d * %d + %d = [%d], %d)%n", i, n, j, i * n + j, tileNum);
+//
+//			int main = isMainI ? i: j;
+//			if ((isDecrement && main == min) || (!isDecrement && main == max)) {
+//				isMainI = !isMainI;
+//				main = isMainI ? i: j;
+//				System.out.printf("changed isMainI to %b%n", isMainI);
+//				if ((isDecrement && main == min) || (!isDecrement && main == max)) {
+//					if (isDecrement)
+//						min++;
+//					else
+//						max--;
+//					isDecrement = !isDecrement;
+//					System.out.printf("changed isDecrement to %b%n", isDecrement);
+//				}
+//			}
+//
+//		}
+//
+//		return new State(tiles, "invalid");
+//	}
 
 	public static State createFrom(List<Integer> tiles, String heuristic) {
 		return new State(tiles, heuristic);
