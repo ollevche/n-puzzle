@@ -4,11 +4,10 @@ import com.google.common.collect.Comparators;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 
 import static npuzzle.utils.Constants.EMPTY;
 
-// TODO: Solve the empty tile 0 or 9 problem.
-// TODO: think of ways to reduce number of fields
 public class State implements Comparable<State> {
 
 	private final Evaluator.Heuristic evaluator;
@@ -29,86 +28,29 @@ public class State implements Comparable<State> {
 	public static State createFinal(int n) {
         int tileNum = 1, capacity = n * n;
 		List <Integer> tiles = new ArrayList<>(Collections.nCopies(capacity, 0));
+		BiConsumer<Integer, Integer> setTile = (index, tile) -> {if (tile < capacity) tiles.set(index, tile);};
 
-        int minI = 0, minJ = 0, maxI = n - 1, maxJ = n - 1;
-        int nextMinI = minI, nextMinJ = minJ, nextMaxI = maxI, nextMaxJ = maxJ;
-
+        int min = 0, max = n - 1;
         while (tileNum < capacity) {
+        	// from left to right
+            for (int j = min; j < max; j++)
+                setTile.accept(min * n + j, tileNum++);
+            // from top to bottom
+            for (int i = min; i < max; i++)
+				setTile.accept(i * n + max, tileNum++);
+            // from right to left
+            for (int j = max; j > min; j--)
+				setTile.accept(max * n + j, tileNum++);
+            // from bottom to top
+            for (int i = max; i > min; i--)
+				setTile.accept(i * n + min, tileNum++);
 
-            minI = nextMinI;
-            maxJ = nextMaxJ;
-            maxI = nextMaxI;
-            minJ = nextMinJ;
-
-            for (int j = minJ; j < maxJ; j++) {
-                tiles.set(minI * n + j, tileNum);
-                tileNum++;
-            }
-            nextMinI++;
-
-            for (int i = minI; i < maxI; i++) {
-                tiles.set(i * n + maxJ, tileNum);
-                tileNum++;
-            }
-            nextMaxJ--;
-
-            for (int j = maxJ; j > minJ; j--) {
-                tiles.set(maxI * n + j, tileNum);
-                tileNum++;
-            }
-            nextMaxI--;
-
-            for (int i = maxI; i > minI; i--) {
-                tiles.set(i * n + minJ, tileNum);
-                tileNum++;
-			}
-            nextMinJ++;
-
+			min++;
+			max--;
 		}
 
-		return new State(tiles, "invalid");
+		return new State(tiles, "none");
 	}
-
-//	public static State createFinal(int n) {
-//		int tileNum = 0, capacity = n * n;
-//		List <Integer> tiles = new ArrayList<>(Collections.nCopies(capacity, 0));
-//
-//		int i = 0, j = -1;
-//		boolean isDecrement = false, isMainI = false;
-//		int min = 0, max = n -1;
-//
-//		while (tileNum + 1 < capacity) {
-//			int change = isDecrement ? -1: 1;
-//			if (isMainI)
-//				i += change;
-//			else
-//				j += change;
-//
-//			tileNum++;
-//
-//			System.out.printf("i = %d, j = %d, tileNum = %d, min = %d, max = %d%n", i, j, tileNum, min, max);
-//			tiles.set(i * n + j, tileNum);
-//			System.out.printf("tiles.set(%d * %d + %d = [%d], %d)%n", i, n, j, i * n + j, tileNum);
-//
-//			int main = isMainI ? i: j;
-//			if ((isDecrement && main == min) || (!isDecrement && main == max)) {
-//				isMainI = !isMainI;
-//				main = isMainI ? i: j;
-//				System.out.printf("changed isMainI to %b%n", isMainI);
-//				if ((isDecrement && main == min) || (!isDecrement && main == max)) {
-//					if (isDecrement)
-//						min++;
-//					else
-//						max--;
-//					isDecrement = !isDecrement;
-//					System.out.printf("changed isDecrement to %b%n", isDecrement);
-//				}
-//			}
-//
-//		}
-//
-//		return new State(tiles, "invalid");
-//	}
 
 	public static State createFrom(List<Integer> tiles, String heuristic) {
 		return new State(tiles, heuristic);
