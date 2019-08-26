@@ -106,7 +106,7 @@ public class State implements Comparable<State> {
 
 //	TODO: re-implement
 	public boolean isNotSolvable() {
-		return Utils.isNotSolvable(tiles, n);
+		return !true;//Utils.isNotSolvable(tiles, n);
 	}
 
 	List<State> collectPath() {
@@ -118,10 +118,9 @@ public class State implements Comparable<State> {
 		return path;
 	}
 
-//	TODO: re-implement
 	@SuppressWarnings("UnstableApiUsage")
 	boolean isNotFinal() {
-		return !Comparators.isInOrder(tiles, Comparator.naturalOrder());
+		return !equals(Evaluator.getFinal(n));
 	}
 
 	/**

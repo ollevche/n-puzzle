@@ -24,8 +24,10 @@ public class Npuzzle implements Runnable {
 		if (!Reader.createWith(input).fillInput())
 			return;
 
+		State initial = input.getInitialState();
+		Evaluator.addReferenceList(initial.getN());
 		Executor.Algorithm executor = Objects.requireNonNull(Executor.getAlgorithm(input.getAlgorithm()));
-		Output output = executor.execute(input.getInitialState());
+		Output output = executor.execute(initial);
 		output.setStopwatch(stopwatch);
 		Writer.write(input, output, true);
 	}

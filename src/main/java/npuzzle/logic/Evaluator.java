@@ -10,11 +10,7 @@ import static npuzzle.utils.Constants.*;
 class Evaluator {
 
 	private static final Map<Integer, List<Pair<Integer, Integer>>> xyListMap = new HashMap<>();
-	static {
-		addReferenceList(3);
-		addReferenceList(4);
-		addReferenceList(5);
-	}
+    private static final Map<Integer, State> finalStateMap = new HashMap<>();
 
 	@FunctionalInterface
 	public interface Heuristic {
@@ -75,20 +71,19 @@ class Evaluator {
 	static void addReferenceList(int n) {
 		if (xyListMap.containsKey(n))
 			return;
-		List<Pair<Integer, Integer>> xyList = new ArrayList<>();
-		int nByN = n * n;
-		int x = 0, y = 0, i = 0;
+		State finalState = State.createFinal(n);
+		finalStateMap.put(n, finalState);
+		List<Integer> finalOrder = finalState.getTiles();
+		List<Pair<Integer, Integer>> xyList = new ArrayList<>(Collections.nCopies(finalOrder.size(), null));
 
-		while (i < nByN) {
-			while (x < n) {
-				xyList.add(new ImmutablePair<>(x, y));
-				x++;
-			}
-			i += x;
-			x = 0;
-			y++;
-		}
+		for (int i = 0; i < finalOrder.size(); i++)
+			xyList.set(finalOrder.get(i), new ImmutablePair<>(i / n, i % n));
+
 		xyListMap.put(n, Collections.unmodifiableList(xyList));
 	}
+
+	static State getFinal(int n) {
+	    return finalStateMap.get(n);
+    }
 
 }
