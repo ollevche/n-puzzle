@@ -1,6 +1,7 @@
 package npuzzle.io;
 
 import com.google.common.base.Stopwatch;
+import com.google.common.collect.Iterables;
 import npuzzle.logic.State;
 
 import java.util.List;
@@ -11,6 +12,7 @@ public class Output {
 	private final int maxNumberOfSates;
 	private final List<State> path;
 	private Stopwatch stopwatch;
+	private Input input;
 
 	private Output(int everInOpenSet, int maxNumberOfSates, List<State> path) {
 		this.everInOpenSet = everInOpenSet;
@@ -34,6 +36,10 @@ public class Output {
 		return path;
 	}
 
+	public State getFinal() {
+		return Iterables.getLast(path, State.EMPTY);
+	}
+
 	@Override public String toString() {
 		return "Number of states ever in the opened set (complexity in time): " + everInOpenSet
 				+ ".\nMaximum number of states ever represented in memory at the same time (complexity in size): " + maxNumberOfSates
@@ -41,8 +47,22 @@ public class Output {
 				+ ".\nTotal time elapsed: " + stopwatch;
 	}
 
-	public void setStopwatch(Stopwatch stopwatch) {
+	public Output setStopwatch(Stopwatch stopwatch) {
 		this.stopwatch = stopwatch;
+		return this;
+	}
+
+	public Stopwatch getStopwatch() {
+		return stopwatch;
+	}
+
+	public Input getInput() {
+		return input;
+	}
+
+	public Output setInput(Input input) {
+		this.input = input;
+		return this;
 	}
 
 }

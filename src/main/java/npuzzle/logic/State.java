@@ -1,15 +1,16 @@
 package npuzzle.logic;
 
-import com.google.common.collect.Comparators;
+import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.*;
 import java.util.function.BiConsumer;
 
-import static npuzzle.utils.Constants.EMPTY;
+import static npuzzle.utils.Constants.NO_TILE;
 
 public class State implements Comparable<State> {
 
+	public static final State EMPTY = new State(Collections.emptyList(), StringUtils.EMPTY);
 	private final Evaluator.Heuristic evaluator;
 	private final List<Integer> tiles;
 	private final int n;
@@ -81,7 +82,7 @@ public class State implements Comparable<State> {
 
 	Set<State> createChildren() {
 		Set<State> children = new HashSet<>();
-		int indexOfEmpty = tiles.indexOf(EMPTY);
+		int indexOfEmpty = tiles.indexOf(NO_TILE);
 
 		if (Utils.canMoveUp(indexOfEmpty, n)) // UP
 			children.add(createChild(indexOfEmpty, indexOfEmpty - n));
@@ -99,7 +100,7 @@ public class State implements Comparable<State> {
 		State child = childOf(this);
 
 		child.tiles.set(i, child.tiles.get(j));
-		child.tiles.set(j, EMPTY);
+		child.tiles.set(j, NO_TILE);
 
 		return child;
 	}

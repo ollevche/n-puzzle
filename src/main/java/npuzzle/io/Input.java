@@ -18,7 +18,7 @@ public class Input {
 	private List<Integer> tiles;
 	private State initialState;
 
-	private Input(String[] args) {
+	public Input(String[] args) {
 		this.args = args;
 	}
 
@@ -59,7 +59,7 @@ public class Input {
 		this.algorithm = algorithm;
 	}
 
-	String getHeuristic() {
+	public String getHeuristic() {
 		return heuristic;
 	}
 
@@ -108,6 +108,10 @@ public class Input {
 	@Override
 	public String toString() {
 		return String.format("Algorithm = %s; heuristic = %s; n = %d; isRandom = %b.", algorithm, heuristic, n, isRandom);
+	}
+
+	public int getN() {
+		return n;
 	}
 
 }

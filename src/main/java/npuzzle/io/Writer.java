@@ -108,4 +108,14 @@ public class Writer {
 		return rows;
 	}
 
+	public synchronized static void write(String s, String filename) {
+		try {
+			Path path = Paths.get(filename);
+			if (Files.notExists(path)) Files.createFile(path);
+			Files.write(path, s.getBytes(), StandardOpenOption.APPEND);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 }

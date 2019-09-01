@@ -166,7 +166,7 @@ public class Reader {
 		boolean trySetN(List<Integer> intValues) {
 			if (!isNSet) {
 				if (intValues.size() == 1) {
-					n = intValues.get(EMPTY);
+					n = intValues.get(NO_TILE);
 					return isNSet = true;
 				} else
 					throw new InvalidInputException(Error.NO_SIZE);
