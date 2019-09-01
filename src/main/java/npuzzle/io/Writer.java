@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -48,8 +49,7 @@ public class Writer {
 		write(input, output, true);
 	}
 
-	public synchronized static void write(List<State> states, boolean fast, String filename)
-	{
+	public synchronized static void write(List<State> states, boolean fast, String filename) {
 		try {
 			if (fast)
 				writeFast(states, filename);
@@ -59,7 +59,6 @@ public class Writer {
 			e.printStackTrace();
 		}
 	}
-
 
 	public synchronized static void write(State state) {
 		System.out.println(createPrettyTiles(state));
@@ -108,11 +107,26 @@ public class Writer {
 		return rows;
 	}
 
-	public synchronized static void write(String s, String filename) {
+	public synchronized static void writeJson(String s, String filename) {
 		try {
 			Path path = Paths.get(filename);
-			if (Files.notExists(path)) Files.createFile(path);
-			Files.write(path, s.getBytes(), StandardOpenOption.APPEND);
+			if (Files.notExists(path)) {
+				Files.createFile(path);
+				Files.write(path, ("[" + s + "]").getBytes(), StandardOpenOption.APPEND);
+			} else {
+				List<String> all = Files.readAllLines(path);
+				all.add(s);
+				Collections.swap(all, all.size() - 1, all.size() - 2);
+				String ss = String.join("", all)
+						.replaceAll("\\s+|\\[|]", "")
+						.replace("}{", "},{");
+
+				Files.write(path, ("["+ss+"]").getBytes());
+
+				Files.write(Paths.get("C:\\Users\\Dariy\\Documents\\Code\\N-puzzle\\src\\test\\resources\\a.txt"),
+						(ss+"\n\n\n").getBytes(), StandardOpenOption.APPEND);
+
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

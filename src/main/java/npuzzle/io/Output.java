@@ -12,7 +12,6 @@ public class Output {
 	private final int maxNumberOfSates;
 	private final List<State> path;
 	private Stopwatch stopwatch;
-	private Input input;
 
 	private Output(int everInOpenSet, int maxNumberOfSates, List<State> path) {
 		this.everInOpenSet = everInOpenSet;
@@ -32,7 +31,7 @@ public class Output {
 		return maxNumberOfSates;
 	}
 
-	public List<State> getPath() {
+	List<State> getPath() {
 		return path;
 	}
 
@@ -49,19 +48,6 @@ public class Output {
 
 	public Output setStopwatch(Stopwatch stopwatch) {
 		this.stopwatch = stopwatch;
-		return this;
-	}
-
-	public Stopwatch getStopwatch() {
-		return stopwatch;
-	}
-
-	public Input getInput() {
-		return input;
-	}
-
-	public Output setInput(Input input) {
-		this.input = input;
 		return this;
 	}
 

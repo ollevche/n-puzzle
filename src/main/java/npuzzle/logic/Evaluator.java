@@ -51,8 +51,12 @@ class Evaluator {
 
 //	Counts how many tiles are not in the correct place
 	private static int hamming(State state, int n) {
-
-		return 0;
+		List<Integer> target = finalStateMap.get(n).getTiles();
+		int diff = 0;
+		for (int i = 0; i < state.getTiles().size(); i++)
+			if (!state.getTiles().get(i).equals(target.get(i)))
+				diff++;
+		return diff;
 	}
 
 	static Heuristic getHeuristic(String heuristic) {

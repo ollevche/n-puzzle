@@ -9,6 +9,7 @@ import java.util.concurrent.Callable;
 public class Npuzzle implements Callable<Output> {
 
 	private final Input input;
+	private Output output;
 
 	private Npuzzle(Input input) {
 		this.input = input;
@@ -28,10 +29,22 @@ public class Npuzzle implements Callable<Output> {
 		State initial = input.getInitialState();
 		Evaluator.addReferenceList(initial.getN());
 		Executor.Algorithm executor = Objects.requireNonNull(Executor.getAlgorithm(input.getAlgorithm()));
-		Output output = executor.execute(initial);
-		output.setStopwatch(stopwatch.stop()).setInput(input);
+		output = executor.execute(initial);
+		output.setStopwatch(stopwatch.stop());
 		Writer.write(input, output, true);
 		return output;
 	}
 
+	public Output output() {
+		return output;
+	}
+
+	public Input input() {
+		return input;
+	}
+
+	@Override public String toString() {
+		return String.format("Initial state: %s%nFinal state: %s%na: %s, h: %s, n: %d%n%n",
+				input.getInitialState(), output == null ? "" : output.getFinal(), input.getAlgorithm(), input.getHeuristic(), input.getN());
+	}
 }
