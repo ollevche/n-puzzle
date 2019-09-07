@@ -11,6 +11,7 @@ import org.junit.jupiter.api.function.Executable;
 
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -41,37 +42,44 @@ class TestUtils {
 			for (Future<Output> future : service.invokeAll(puzzles, minTotalTimeout, TimeUnit.MINUTES)) {
 				State received = future.get().getFinal();
 				State expected = finals.get(n);
-				list.add(() -> assertEquals(expected, received, "WRONG FINAL"));
+				list.add(() -> assertEquals(expected, received, wrongFinal(future.get().getInput(), future.get())));
 			}
 		} catch (InterruptedException | ExecutionException ex) {
 			ex.printStackTrace();
 		} catch (CancellationException e) {
 			System.err.printf("Killed: took too long.%n%n");
 			System.err.printf("Puzzles were%n%s%n", puzzles);
-			for (Npuzzle p : puzzles) logToJson(p);
+			for (Npuzzle p : puzzles) logToJson(p, "timeout");
 		} finally {
 			service.shutdown();
 		}
 		Assertions.assertAll(list);
 	}
 
-	private static void logToJson(Npuzzle puzzle) {
-		Output output = puzzle.output();
-		Input input = puzzle.input();
+	private static Supplier<String> wrongFinal(Input input, Output output) {
+		logToJson(input, output, "Wrong final");
+		return () -> "WRONG FINAL";
+	}
+
+	private static void logToJson(Npuzzle puzzle, String reason) {
+		logToJson(puzzle.input(), puzzle.output(), reason);
+	}
+
+	private static void logToJson(Input input, Output output, String reason) {
 		if (input != null)
 			if (output == null || !output.getFinal().equals(State.createFinal(input.getN()))) {
-				JSONObject o = createLogJson(input);
-				Writer.writeJson(o.toString(), "src\\test\\resources\\failedTime.json");
+				JSONObject o = createLogJson(input, reason);
+				Writer.writeJson(o.toString(), "src/test/resources/failed.json");
 			}
 	}
 
-	private static JSONObject createLogJson(Input input) {
+
+	private static JSONObject createLogJson(Input input, String reason) {
 		JSONObject o = new JSONObject();
-		o.put("a", input.getAlgorithm());
-		o.put("h", input.getHeuristic());
-		o.put("n", input.getN());
-		o.put("initial", input.getInitialState());
-		return o;
+		return o.put("a", input.getAlgorithm())
+				.put("n", input.getN())
+				.put("initial", input.getInitialState())
+				.put("message", reason);
 	}
 
 }

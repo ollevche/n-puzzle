@@ -30,7 +30,7 @@ public class Npuzzle implements Callable<Output> {
 		Evaluator.addReferenceList(initial.getN());
 		Executor.Algorithm executor = Objects.requireNonNull(Executor.getAlgorithm(input.getAlgorithm()));
 		output = executor.execute(initial);
-		output.setStopwatch(stopwatch.stop());
+		output.setStopwatch(stopwatch.stop()).setInput(input);
 		Writer.write(input, output, true);
 		return output;
 	}

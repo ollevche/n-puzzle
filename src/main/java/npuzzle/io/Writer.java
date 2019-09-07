@@ -122,10 +122,6 @@ public class Writer {
 						.replace("}{", "},{");
 
 				Files.write(path, ("["+ss+"]").getBytes());
-
-				Files.write(Paths.get("C:\\Users\\Dariy\\Documents\\Code\\N-puzzle\\src\\test\\resources\\a.txt"),
-						(ss+"\n\n\n").getBytes(), StandardOpenOption.APPEND);
-
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
