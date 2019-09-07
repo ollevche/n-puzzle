@@ -98,12 +98,19 @@ public class Reader {
 
     private void readFromStdIn() throws IOException {
         String line;
+        try {
+            // this is added because if there was an error during reading, the error message will print after
+            // the 'Enter input' message, which is confusing. This is a work around, admittedly not the best one
+            Thread.sleep(300);
+        } catch (InterruptedException e) {
+            System.err.println("PANIC PANIC PANIC THREAD WAS INTERRUPTED");
+            Thread.currentThread().interrupt(); // should not happen ever so if does - God save us
+            return;
+        }
         System.out.printf("Enter input:%n");
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         while (StringUtils.isNotBlank(line = br.readLine())) validator.validateLine(line);
-
-        System.out.printf("Input consumed.%n");
     }
 
     private void finalCheck() {
