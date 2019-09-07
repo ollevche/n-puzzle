@@ -80,7 +80,7 @@ public class Reader {
             validator.saveValidRandomArg(line.getOptionValue(RANDOM));
     }
 
-    private void readTiles() throws IOException {
+    public void readTiles() throws IOException {
 
         if (input.hasFile()) {
             Files.readAllLines(Paths.get(input.getFile())).forEach(validator::validateLine);

@@ -47,7 +47,7 @@ public class Input {
 		return file;
 	}
 
-	void setFile(String file) {
+	public void setFile(String file) {
 		this.file = file;
 	}
 
