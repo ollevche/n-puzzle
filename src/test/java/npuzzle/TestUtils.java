@@ -78,6 +78,7 @@ class TestUtils {
 		JSONObject o = new JSONObject();
 		return o.put("a", input.getAlgorithm())
 				.put("n", input.getN())
+                .put("h", input.getHeuristic())
 				.put("initial", input.getInitialState())
 				.put("message", reason);
 	}
