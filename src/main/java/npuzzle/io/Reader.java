@@ -7,10 +7,9 @@ import org.apache.commons.cli.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static npuzzle.utils.Constants.*;
@@ -22,250 +21,263 @@ import static npuzzle.utils.Constants.*;
  * used to read program input
  */
 
+// TODO: see if not full path works for reading from file
 public class Reader {
 
-	private final Input input;
-	private final Validator validator;
-	private static final Options options = prepareOptions();
+    private final Input input;
+    private final Validator validator;
+    private static final Options options = prepareOptions();
 
-	private Reader(Input input) {
-		this.input = input;
-		validator = new Validator();
-	}
+    private Reader(Input input) {
+        this.input = input;
+        validator = new Validator();
+    }
 
-	public static Reader createWith(Input input) {
-		return new Reader(input);
-	}
+    public static Reader createWith(Input input) {
+        return new Reader(input);
+    }
 
-	private static Options prepareOptions() {
-		Options options = new Options();
+    private static Options prepareOptions() {
+        Options options = new Options();
 
-		options.addRequiredOption("a", ALGORITHM, true, ALGORITHM_DESCRIPTION);
-		options.addOption("h", HEURISTIC, true, HEURISTIC_DESCRIPTION);
-		options.addOption("f", FILE, true, FILE_DESCRIPTION);
-		options.addOption("r", RANDOM, true, RANDOM_DESCRIPTION);
+        options.addRequiredOption("a", ALGORITHM, true, ALGORITHM_DESCRIPTION);
+        options.addOption("h", HEURISTIC, true, HEURISTIC_DESCRIPTION);
+        options.addOption("f", FILE, true, FILE_DESCRIPTION);
+        options.addOption("r", RANDOM, true, RANDOM_DESCRIPTION);
 
-		return options;
-	}
+        return options;
+    }
 
-	public boolean fillInput() {
-		try {
-			if (input.getArgs() == null)
-				return true;
-			parseArgs(input.getArgs());
-			if (!input.isRandom())
-				readTiles();
-			input.setInitialState(State.createFrom(input.getTiles(), input.getHeuristic()));
-			return true;
-		} catch (IOException e) {
-			System.err.println("Cannot read input: " + e.getMessage());
-		} catch (ParseException e) {
-			System.err.println("Invalid argument: " + e.getMessage());
-			new HelpFormatter().printHelp("N-puzzle", options);
-		} catch (InvalidInputException e) {
-			System.err.println(e.getMessage());
-		}
+    public boolean fillInput() {
+        try {
+            if (input.getArgs() == null)
+                return false;
+            parseArgs(input.getArgs());
+            if (!input.isRandom())
+                readTiles();
+            input.setInitialState(State.createFrom(input.getTiles(), input.getHeuristic()));
+            return true;
+        } catch (IOException e) {
+            System.err.println("Cannot read input: " + e.getMessage());
+        } catch (ParseException e) {
+            System.err.println("Invalid argument: " + e.getMessage());
+            new HelpFormatter().printHelp("N-puzzle", options);
+        } catch (InvalidInputException e) {
+            System.err.println(e.getMessage());
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	private void parseArgs(String[] args) throws ParseException {
-		CommandLineParser parser = new DefaultParser();
-		CommandLine line = parser.parse(options, args);
+    private void parseArgs(String[] args) throws ParseException {
+        CommandLineParser parser = new DefaultParser();
+        CommandLine line = parser.parse(options, args);
 
-		validator.saveValidAlgorithm(line.getOptionValue(ALGORITHM));
-		validator.saveValidHeuristic(line.getOptionValue(HEURISTIC));
-		validator.saveValidatedFile(line.getOptionValue(FILE));
-		if (line.hasOption(RANDOM))
-			validator.saveValidRandomArg(line.getOptionValue(RANDOM));
-	}
+        validator.saveValidAlgorithm(line.getOptionValue(ALGORITHM));
+        validator.saveValidHeuristic(line.getOptionValue(HEURISTIC));
+        validator.saveValidatedFile(line.getOptionValue(FILE));
+        if (line.hasOption(RANDOM))
+            validator.saveValidRandomArg(line.getOptionValue(RANDOM));
+    }
 
-	private void readTiles() throws IOException {
-		String line;
-		InputStream inputStream;
+    private void readTiles() throws IOException {
 
-		if (input.hasFile())
-			inputStream = new BufferedInputStream(new FileInputStream(input.getFile()));
-		else
-			inputStream = System.in;
+        if (input.hasFile()) {
+            Files.readAllLines(Paths.get(input.getFile())).forEach(validator::validateLine);
+            finalCheck();
+        } else {
+            synchronized (System.in) {
+                synchronized (System.out) {
+                    readFromStdIn();
+                    finalCheck();
+                }
+            }
+        }
 
-		try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
-			while ((line = br.readLine()) != null)
-				validator.validateLine(line);
-		}
-		validator.checkEnoughTiles();
-		validator.saveValidatedTiles(input);
+    }
 
-		if (State.createFrom(input.getTiles(), MANHATTAN).isNotSolvable())
-			throw new InvalidInputException(Error.UNSOLVABLE);
-	}
+    private void readFromStdIn() throws IOException {
+        String line;
+        System.out.printf("Enter input:%n");
 
-	public static List<Input> splitArgs(String[] args) {
-		List<Input> inputList = new ArrayList<>();
-		List<String> argParts = Arrays.asList(StringUtils.join(args, " ").split("\\|"));
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        while (StringUtils.isNotBlank(line = br.readLine())) validator.validateLine(line);
 
-		for (String arg : argParts)
-			inputList.add(Input.fromArgs(arg.trim().split(" ")));
+        System.out.printf("Input consumed.%n");
+    }
 
-		return inputList;
-	}
+    private void finalCheck() {
+        if (validator.n == 0)
+            throw new InvalidInputException(Error.NO_SIZE);
+        validator.checkEnoughTiles();
+        validator.saveValidatedTiles(input);
 
-	// TODO: treat last empty line as EOF
-	private class Validator {
+        if (State.createFrom(input.getTiles(), MANHATTAN).isNotSolvable())
+            throw new InvalidInputException(Error.UNSOLVABLE);
+    }
 
-		boolean isNSet;
-		final List<Integer> tiles;
-		int n;
+    public static List<Input> splitArgs(String[] args) {
+        List<Input> inputList = new ArrayList<>();
+        List<String> argParts = Arrays.asList(StringUtils.join(args, " ").split("\\|"));
 
-		Validator() {
-			tiles = new ArrayList<>();
-		}
+        for (String arg : argParts)
+            inputList.add(Input.fromArgs(arg.trim().split(" ")));
 
-		void validateLine(String line) {
-			if (line.isEmpty())
-				throw new InvalidInputException(Error.EMPTY);
+        return inputList;
+    }
 
-			List<String> elements = splitLineAndRemoveComments(line);
+    private class Validator {
 
-			if (elements.isEmpty())
-				return;
+        boolean isNSet;
+        final List<Integer> tiles;
+        int n;
 
-			checkNonNumeric(elements);
+        Validator() {
+            tiles = new ArrayList<>();
+        }
 
-			List<Integer> intValues = extractIntValues(elements);
+        void validateLine(String line) {
+            List<String> elements = splitLineAndRemoveComments(line);
 
-			if (trySetN(intValues))
-				return;
+            if (elements.isEmpty())
+                return;
 
-			checkMaxSizeAndValue(intValues);
-			checkDuplicates(intValues);
-			checkDuplicates(tiles);
-			tiles.addAll(intValues);
-		}
+            checkNonNumeric(elements);
 
-		void checkDuplicates(List<Integer> values) {
-			if (!values.stream().allMatch(new HashSet<Integer>()::add))
-				throw new InvalidInputException(Error.DUPLICATES);
-		}
+            List<Integer> intValues = extractIntValues(elements);
 
-		void checkMaxSizeAndValue(List<Integer> intValues) {
-			if (intValues.stream().anyMatch(i -> i > n * n - 1))
-				throw new InvalidInputException(Error.OVER_MAX); // TODO: fix 3\n 012 -> 0 1 2
+            if (trySetN(intValues))
+                return;
 
-			if (intValues.size() != n)
-				throw new InvalidInputException(Error.WRONG_AMOUNT, String.valueOf(n - intValues.size()));
-		}
+            checkMaxSizeAndValue(intValues);
+            checkDuplicates(intValues);
+            checkDuplicates(tiles);
+            tiles.addAll(intValues);
+        }
 
-		void checkEnoughTiles() {
-			int diff = (int) Math.pow(n, 2) - tiles.size();
+        void checkDuplicates(List<Integer> values) {
+            if (!values.stream().allMatch(new HashSet<Integer>()::add))
+                throw new InvalidInputException(Error.DUPLICATES);
+        }
 
-			if (diff != 0)
-				throw new InvalidInputException(Error.NOT_ENOUGH_TILES, String.valueOf(diff));
-		}
+        void checkMaxSizeAndValue(List<Integer> intValues) {
+            if (intValues.stream().anyMatch(i -> i > n * n - 1))
+                throw new InvalidInputException(Error.OVER_MAX); // TODO: fix 3\n 012 -> 0 1 2 | NOTE: seems to work on mac
 
-		boolean trySetN(List<Integer> intValues) {
-			if (!isNSet) {
-				if (intValues.size() == 1) {
-					n = intValues.get(NO_TILE);
-					return isNSet = true;
-				} else
-					throw new InvalidInputException(Error.NO_SIZE);
-			}
-			return false;
-		}
+            if (intValues.size() != n)
+                throw new InvalidInputException(Error.WRONG_AMOUNT, String.valueOf(n - intValues.size()));
+        }
 
-		List<String> splitLineAndRemoveComments(String line) {
-			List<String> elements = Arrays.asList(line.split("\\s+"));
-			return extractPartsBeforeComment(elements);
-		}
+        void checkEnoughTiles() {
+            int diff = (int) Math.pow(n, 2) - tiles.size();
 
-//		TODO: test new version of check
-		void checkNonNumeric(List<String> elements) {
-			if (elements.stream().anyMatch(s -> !s.matches("\\d+")))
-				throw new InvalidInputException(Error.NON_NUMERIC);
-		}
+            if (diff != 0)
+                throw new InvalidInputException(Error.NOT_ENOUGH_TILES, String.valueOf(diff));
+        }
 
-		List<String> extractPartsBeforeComment(List<String> elements) {
-			List<String> beforeComment = new ArrayList<>();
-			boolean isComment = false;
+        boolean trySetN(List<Integer> intValues) {
+            if (!isNSet) {
+                if (intValues.size() == 1) {
+                    n = intValues.get(NO_TILE);
+                    return isNSet = true;
+                } else
+                    throw new InvalidInputException(Error.NO_SIZE);
+            }
+            return false;
+        }
 
-			for (String element : elements) {
-				if (element.startsWith("#"))
-					isComment = true;
-				if (!isComment)
-					beforeComment.add(element);
-			}
-			return beforeComment;
-		}
+        List<String> splitLineAndRemoveComments(String line) {
+            List<String> elements = Arrays.asList(line.split("\\s+"));
+            return extractPartsBeforeComment(elements);
+        }
 
-		List<Integer> extractIntValues(List<String> elements) {
-			return elements.stream().map(Integer::valueOf).collect(Collectors.toList());
-		}
+        //		TODO: test new version of check
+        void checkNonNumeric(List<String> elements) {
+            if (elements.stream().anyMatch(s -> !s.matches("\\d+")))
+                throw new InvalidInputException(Error.NON_NUMERIC);
+        }
 
-		void saveValidRandomArg(String undef) {
-			undef = undef.trim();
+        List<String> extractPartsBeforeComment(List<String> elements) {
+            List<String> beforeComment = new ArrayList<>();
+            boolean isComment = false;
 
-			if (!undef.matches("\\d+"))
-				throw new InvalidInputException(Error.NON_NUMERIC, undef);
+            for (String element : elements) {
+                if (element.startsWith("#"))
+                    isComment = true;
+                if (!isComment)
+                    beforeComment.add(element);
+            }
+            return beforeComment;
+        }
 
-			int randomN = Integer.valueOf(undef);
-			if (randomN < 2)
-				throw new InvalidInputException(Error.RANDOM_TOO_SMALL, undef);
+        List<Integer> extractIntValues(List<String> elements) {
+            return elements.stream().map(Integer::valueOf).collect(Collectors.toList());
+        }
 
-			input.generateRandomTiles(randomN);
-		}
+        void saveValidRandomArg(String undef) {
+            undef = undef.trim();
 
-		void saveValidAlgorithm(String undef) {
-			String algorithm;
+            if (!undef.matches("\\d+"))
+                throw new InvalidInputException(Error.NON_NUMERIC, undef);
 
-			switch (undef.trim().toLowerCase()) {
-				case GREEDY:
-					algorithm = GREEDY;
-					break;
-				case UNIFORM:
-					algorithm = UNIFORM;
-					break;
-				case ASTAR:
-					algorithm = ASTAR;
-					break;
-				default:
-					throw new InvalidInputException(Error.ARG_NOT_FOUND, undef);
-			}
+            int randomN = Integer.valueOf(undef);
+            if (randomN < 2)
+                throw new InvalidInputException(Error.RANDOM_TOO_SMALL, undef);
 
-			input.setAlgorithm(algorithm);
-		}
+            input.generateRandomTiles(randomN);
+        }
 
-		void saveValidHeuristic(String undef) {
-			String heuristic;
-			undef = undef == null ? "" : undef;
+        void saveValidAlgorithm(String undef) {
+            String algorithm;
 
-			switch (undef.trim().toLowerCase()) {
-				case MANHATTAN:
-					heuristic = MANHATTAN;
-					break;
-				case HAMMING:
-					heuristic = HAMMING;
-					break;
-				case EUCLIDEAN:
-					heuristic = EUCLIDEAN;
-					break;
-				default:
-					heuristic = StringUtils.EMPTY;
-			}
+            switch (undef.trim().toLowerCase()) {
+                case GREEDY:
+                    algorithm = GREEDY;
+                    break;
+                case UNIFORM:
+                    algorithm = UNIFORM;
+                    break;
+                case ASTAR:
+                    algorithm = ASTAR;
+                    break;
+                default:
+                    throw new InvalidInputException(Error.ARG_NOT_FOUND, undef);
+            }
 
-			if (heuristic.isEmpty() && !input.getAlgorithm().equals(UNIFORM))
-				throw new InvalidInputException(Error.ARG_NOT_FOUND, undef);
+            input.setAlgorithm(algorithm);
+        }
 
-			input.setHeuristic(heuristic);
-		}
+        void saveValidHeuristic(String undef) {
+            String heuristic;
+            undef = undef == null ? "" : undef;
 
-		void saveValidatedFile(String absolutePath) {
-			input.setFile(absolutePath);
-		}
+            switch (undef.trim().toLowerCase()) {
+                case MANHATTAN:
+                    heuristic = MANHATTAN;
+                    break;
+                case HAMMING:
+                    heuristic = HAMMING;
+                    break;
+                case EUCLIDEAN:
+                    heuristic = EUCLIDEAN;
+                    break;
+                default:
+                    heuristic = StringUtils.EMPTY;
+            }
 
-		void saveValidatedTiles(Input input) {
-			input.setTilesAndN(tiles, n);
-		}
+            if (heuristic.isEmpty() && !input.getAlgorithm().equals(UNIFORM))
+                throw new InvalidInputException(Error.ARG_NOT_FOUND, undef);
 
-	}
+            input.setHeuristic(heuristic);
+        }
+
+        void saveValidatedFile(String absolutePath) {
+            input.setFile(absolutePath);
+        }
+
+        void saveValidatedTiles(Input input) {
+            input.setTilesAndN(tiles, n);
+        }
+
+    }
 }
