@@ -2,7 +2,7 @@ package npuzzle.utils;
 
 public enum Error {
 
-	NOT_ENOUGH_TILES("Invalid input: not enough Tiles. Missing: "),
+	NOT_ENOUGH_TILES("Invalid input: not enough tiles. Diff: "),
 	NO_SIZE("Invalid Input: size not provided"),
 	OVER_MAX("Invalid Input: Tile has value over max allowed"),
 	DUPLICATES("Invalid Input: cannot contain duplicate values"),
