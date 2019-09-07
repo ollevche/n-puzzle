@@ -14,6 +14,7 @@ public class State implements Comparable<State> {
 	private final Evaluator.Heuristic evaluator;
 	private final List<Integer> tiles;
 	private final int n;
+	private int hashcode;
 	private int evaluation;
 	private int pathSize;
 	private State parent;
@@ -135,13 +136,11 @@ public class State implements Comparable<State> {
 	 * violates the contract between {@link #compareTo}
 	 */
 	@Override public boolean equals(Object obj) {
-		if (obj != null && obj.getClass().equals(State.class))
-			return tiles.equals(((State) obj).tiles);
-		return false;
+		return obj != null && obj.getClass().equals(State.class) && tiles.equals(((State) obj).tiles);
 	}
 
 	@Override public int hashCode() {
-		return tiles.hashCode();
+		return hashcode == 0 ? hashcode = tiles.hashCode() : hashcode;
 	}
 
 	@Override public String toString() {
