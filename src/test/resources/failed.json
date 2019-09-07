@@ -1,6 +1,55 @@
 [
   {
     "a": "uniform",
+    "initial": "1,2,3,4,5,6,7,8,0|evaluation:0",
+    "h": "manhattan",
+    "message": "timeout",
+    "n": 3
+  },
+  {
+    "a": "astar",
+    "initial": "1,2,3,4,5,6,7,8,0|evaluation:0",
+    "h": "manhattan",
+    "message": "Wrongfinal",
+    "n": 3
+  },
+  {
+    "a": "astar",
+    "initial": "1,2,3,4,5,6,7,8,0|evaluation:0",
+    "h": "manhattan",
+    "message": "Wrongfinal",
+    "n": 3
+  },
+  {
+    "a": "uniform",
+    "initial": "1,2,3,4,5,6,7,8,0|evaluation:0",
+    "h": "manhattan",
+    "message": "timeout",
+    "n": 3
+  },
+  {
+    "a": "astar",
+    "initial": "1,2,3,4,5,6,7,8,0|evaluation:0",
+    "h": "manhattan",
+    "message": "Wrongfinal",
+    "n": 3
+  },
+  {
+    "a": "uniform",
+    "initial": "1,2,3,4,5,6,7,8,0|evaluation:0",
+    "h": "manhattan",
+    "message": "timeout",
+    "n": 3
+  },
+  {
+    "a": "uniform",
+    "initial": "1,2,3,4,5,6,7,8,0|evaluation:0",
+    "h": "manhattan",
+    "message": "timeout",
+    "n": 3
+  },
+  {
+    "a": "uniform",
     "initial": "4,8,7,6,0,3,1,5,2|evaluation:0",
     "message": "timeout",
     "n": 3
@@ -117,6 +166,13 @@
     "a": "astar",
     "initial": "7,2,5,1,0,3,8,4,6|evaluation:0",
     "message": "Wrongfinal",
+    "n": 3
+  },
+  {
+    "a": "uniform",
+    "initial": "1,2,3,4,5,6,7,8,0|evaluation:0",
+    "h": "manhattan",
+    "message": "timeout",
     "n": 3
   }
 ]
