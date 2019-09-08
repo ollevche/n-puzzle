@@ -15,11 +15,11 @@ class FoursTest {
 	}
 
 	@Test void manhattanUniform() {
-		testRandom(3,4, UNIFORM, MANHATTAN, 1);
+		testRandom(3,4, UNIFORM, MANHATTAN, 5);
 	}
 
 	@Test void manhattanAstar() {
-		testRandom(3,4, ASTAR, MANHATTAN, 1);
+		testRandom(1,4, ASTAR, MANHATTAN, 5);
 	}
 
 	@Disabled("greedy not implemented")
@@ -28,11 +28,11 @@ class FoursTest {
 	}
 
 	@Test void euclideanUniform() {
-		testRandom(3,4, UNIFORM, EUCLIDEAN, 2);
+		testRandom(3,4, UNIFORM, EUCLIDEAN, 7);
 	}
 
 	@Test void euclideanAstar() {
-		testRandom(3,4, ASTAR, EUCLIDEAN, 1);
+		testRandom(3,4, ASTAR, EUCLIDEAN, 5);
 	}
 
 	@Disabled("greedy not implemented")
@@ -41,11 +41,11 @@ class FoursTest {
 	}
 
 	@Test void hammingUniform() {
-		testRandom(3,4, UNIFORM, HAMMING, 2);
+		testRandom(3,4, UNIFORM, HAMMING, 7);
 	}
 
 	@Test void hammingAstar() {
-		testRandom(3,4, ASTAR, HAMMING, 1);
+		testRandom(3,4, ASTAR, HAMMING, 5);
 	}
 
 	@Disabled("greedy not implemented")

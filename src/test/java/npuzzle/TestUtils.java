@@ -34,13 +34,21 @@ class TestUtils {
         put(5, finalOfFive);
     }};
 
+    static void testManual(List<Integer> tiles, String a, String h) {
+        int n = (int) Math.sqrt(tiles.size());
+        Input input = Input.create(tiles, n, a, h);
+        Npuzzle npuzzle = Npuzzle.create(input);
+        Output output = npuzzle.call();
+        assertEquals(finals.get(n), output.getFinal(), wrongFinal(output.getInput(), output));
+    }
+
     static void testSolvability(String file) {
         String[] args = String.format("-f %s -a uniform -h manhattan", file).split(" ");
         Input input = new Input(args);
         input.setFile(file);
         Reader reader = Reader.createWith(input);
         reader.fillInput();
-        if (input.getInitialState().isNotSolvable())
+        if (input.getInitialState() == null)
             throw new InvalidInputException(Error.UNSOLVABLE);
     }
 

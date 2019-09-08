@@ -19,7 +19,7 @@ class FivesTest {
 	}
 
 	@Test void manhattanAstar() {
-		testRandom(3,5, ASTAR, MANHATTAN, 15);
+		testRandom(1,5, ASTAR, MANHATTAN, 15);
 	}
 
 	@Disabled("greedy not implemented")
