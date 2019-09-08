@@ -36,7 +36,7 @@ class Executor {
 
 //	TODO: see if maxNumberOfStates is logically correct
 	private static Output executeAstar(State initial) {
-		int everInOpenSet = 1, maxNumberOfSates = 1;
+		int everInOpenSet = 1, maxNumberOfStates = 1;
 		Set<State> closedSet = new HashSet<>();
 		Set<State> openSet = new HashSet<>();
 		Set<State> children;
@@ -46,7 +46,7 @@ class Executor {
 			closedSet.add(current);
 			openSet.remove(current);
 			children = current.createChildren();
-			maxNumberOfSates += children.size();
+			maxNumberOfStates += children.size();
 			children.removeAll(closedSet);
 			openSet.addAll(children);
 			everInOpenSet += children.size();
@@ -60,12 +60,12 @@ class Executor {
 			}
 		}
 
-		return Output.create(everInOpenSet, maxNumberOfSates, current.collectPath());
+		return Output.create(everInOpenSet, maxNumberOfStates, current.collectPath());
 	}
 
 //	TODO: maybe fix the fact that these are almost identical??
 	private static Output executeUniform(State initial) {
-		int everInOpenSet = 1, maxNumberOfSates = 1;
+		int everInOpenSet = 1, maxNumberOfStates = 1;
 		Set<State> closedSet = new HashSet<>();
 		Set<State> openSet = new HashSet<>();
 		Set<State> children;
@@ -75,7 +75,7 @@ class Executor {
 			closedSet.add(current);
 			openSet.remove(current);
 			children = current.createChildren();
-			maxNumberOfSates += children.size();
+			maxNumberOfStates += children.size();
 			children.removeAll(closedSet);
 			openSet.addAll(children);
 			everInOpenSet += children.size();
@@ -84,7 +84,7 @@ class Executor {
 			current = Collections.min(openSet);
 		}
 
-		return Output.create(everInOpenSet, maxNumberOfSates, current.collectPath());
+		return Output.create(everInOpenSet, maxNumberOfStates, current.collectPath());
 	}
 
 	static Algorithm getAlgorithm(String algorithm) {
