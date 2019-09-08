@@ -49,8 +49,12 @@ public class Reader {
 
     public boolean fillInput() {
         try {
-            if (input.getArgs() == null)
-                return false;
+            if (input.getArgs() == null) {
+                if (isManualInput()) {
+                    input.setInitialState(State.createFrom(input.getTiles(), input.getHeuristic()));
+                    return true;
+                } else return false;
+            }
             parseArgs(input.getArgs());
             if (!input.isRandom())
                 readTiles();
@@ -66,6 +70,11 @@ public class Reader {
         }
 
         return false;
+    }
+
+    private boolean isManualInput() {
+        return Objects.nonNull(input.getAlgorithm()) && Objects.nonNull(input.getHeuristic())
+                && Objects.nonNull(input.getTiles()) && input.getN() != 0;
     }
 
     private void parseArgs(String[] args) throws ParseException {
@@ -193,7 +202,7 @@ public class Reader {
         }
 
         List<String> splitLineAndRemoveComments(String line) {
-            List<String> elements = Arrays.asList(line.split("\\s+"));
+            List<String> elements = Arrays.asList(line.trim().split("\\s+"));
             return extractPartsBeforeComment(elements);
         }
 
