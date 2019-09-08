@@ -106,9 +106,8 @@ public class State implements Comparable<State> {
 		return child;
 	}
 
-//	TODO: re-implement
 	public boolean isNotSolvable() {
-		return !true;//Utils.isNotSolvable(tiles, n);
+		return Utils.countInversions(this) % 2 != Utils.countInversions(State.createFinal(n)) % 2;
 	}
 
 	List<State> collectPath() {
@@ -180,27 +179,9 @@ public class State implements Comparable<State> {
 			return getColumnOfEmpty(indexOfEmpty, n) != n - 1;
 		}
 
-		// TODO: re-implement
-		private static boolean isNotSolvable(List<Integer> tiles, int n) {
-			int inversions = countInversions(tiles);
-			int indexOfEmpty = tiles.indexOf(EMPTY);
-			// if n is even
-			if (n % 2 == 0) {
-
-				int positionFromBottom = n - Utils.getRowOfEmpty(indexOfEmpty, n);
-			/* 	if pos is even and inversions is odd
-			 	or
-			 	if pos is odd and inversions is even
-			 */
-				return (positionFromBottom % 2 + inversions % 2) != 1;
-			}
-
-			// if n is odd and inversions is even
-			return inversions % 2 != 0;
-		}
-
-		private static int countInversions(List<Integer> tiles) {
+		private static int countInversions(State state) {
 			int inversions = 0;
+			List<Integer> tiles = state.getTiles();
 
 			for (int i = 0; i < tiles.size() - 1; i++) {
 

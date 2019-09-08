@@ -21,7 +21,6 @@ import static npuzzle.utils.Constants.*;
  * used to read program input
  */
 
-// TODO: see if not full path works for reading from file
 public class Reader {
 
     private final Input input;
@@ -198,7 +197,6 @@ public class Reader {
             return extractPartsBeforeComment(elements);
         }
 
-        //		TODO: test new version of check
         void checkNonNumeric(List<String> elements) {
             if (elements.stream().anyMatch(s -> !s.matches("\\d+")))
                 throw new InvalidInputException(Error.NON_NUMERIC);
