@@ -6,6 +6,8 @@ import npuzzle.io.Reader;
 import npuzzle.io.Writer;
 import npuzzle.logic.Npuzzle;
 import npuzzle.logic.State;
+import npuzzle.utils.Error;
+import npuzzle.utils.InvalidInputException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.function.Executable;
@@ -31,6 +33,16 @@ class TestUtils {
         put(4, finalOfFour);
         put(5, finalOfFive);
     }};
+
+    static void testSolvability(String file) {
+        String[] args = String.format("-f %s -a uniform -h manhattan", file).split(" ");
+        Input input = new Input(args);
+        input.setFile(file);
+        Reader reader = Reader.createWith(input);
+        reader.fillInput();
+        if (input.getInitialState().isNotSolvable())
+            throw new InvalidInputException(Error.UNSOLVABLE);
+    }
 
     static void testValidation(String file) throws IOException {
         String[] args = String.format("-f %s -a uniform -h manhattan", file).split(" ");
