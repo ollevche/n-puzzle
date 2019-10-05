@@ -75,7 +75,7 @@ public class State implements Comparable<State> {
 
 	private int evaluate() {
 		if (evaluation == 0 && evaluator != null)
-			evaluation = evaluator.evaluate(this, n) + pathSize;
+			evaluation = (10 * pathSize) * evaluator.evaluate(this, n) + pathSize;
 		else if (evaluation == 0)
 			evaluation = pathSize;
 		return evaluation;
@@ -107,7 +107,8 @@ public class State implements Comparable<State> {
 	}
 
 	public boolean isNotSolvable() {
-		return Utils.countInversions(this) % 2 != Utils.countInversions(State.createFinal(n)) % 2;
+		return false;
+//		return Utils.countInversions(this) % 2 != Utils.countInversions(State.createFinal(n)) % 2;
 	}
 
 	List<State> collectPath() {

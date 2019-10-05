@@ -20,15 +20,15 @@ class Evaluator {
 	private static int manhattan(State state, int n) {
 		List<Pair<Integer, Integer>> xyList = xyListMap.get(n);
 		List<? extends Integer> tiles = state.getTiles();
-		Integer tile;
+		Pair <Integer, Integer> correctTile;
 		int x, y;
 		int stateEval = 0;
 
 		for (int index = 0; index < tiles.size(); index++) {
-			x = index % n;
-			y = index / n;
-			tile = tiles.get(index);
-			stateEval += Math.abs(x - xyList.get(tile).getKey()) + Math.abs(y - xyList.get(tile).getValue());
+			x = index / n;
+			y = index % n;
+			correctTile = xyList.get(tiles.get(index));
+			stateEval += Math.abs(x - correctTile.getKey()) + Math.abs(y - correctTile.getValue());
 		}
 		return stateEval;
 	}
@@ -36,15 +36,15 @@ class Evaluator {
 	private static int euclidean(State state, int n) {
 		List<Pair<Integer, Integer>> xyList = xyListMap.get(n);
 		List<? extends Integer> tiles = state.getTiles();
-		Integer tile;
+		Pair<Integer, Integer> correctTile;
 		int x, y;
 		int stateEval = 0;
 
 		for (int index = 0; index < tiles.size(); index++) {
-			x = index % n;
-			y = index / n;
-			tile = tiles.get(index);
-			stateEval += Math.sqrt(Math.pow(x - xyList.get(tile).getKey(), 2) + Math.pow(y - xyList.get(tile).getValue(), 2));
+			x = index / n;
+			y = index % n;
+			correctTile = xyList.get(tiles.get(index));
+			stateEval += Math.sqrt(Math.pow(x - correctTile.getKey(), 2) + Math.pow(y - correctTile.getValue(), 2));
 		}
 		return stateEval;
 	}
