@@ -1,5 +1,6 @@
 package npuzzle.logic;
 
+import npuzzle.utils.Constants;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -107,8 +108,16 @@ public class State implements Comparable<State> {
 	}
 
 	public boolean isNotSolvable() {
-		return false;
-//		return Utils.countInversions(this) % 2 != Utils.countInversions(State.createFinal(n)) % 2;
+		int current = Utils.countInversions(this);
+		State finalState = State.createFinal(n);
+		int goal = Utils.countInversions(finalState);
+
+		if (n % 2 == 0) {
+			current += this.tiles.indexOf(NO_TILE);
+			goal += finalState.tiles.indexOf(NO_TILE);
+		}
+
+		return current % 2 != goal % 2;
 	}
 
 	List<State> collectPath() {
@@ -120,7 +129,6 @@ public class State implements Comparable<State> {
 		return path;
 	}
 
-	@SuppressWarnings("UnstableApiUsage")
 	boolean isNotFinal() {
 		return !equals(Evaluator.getFinal(n));
 	}
