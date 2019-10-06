@@ -54,3 +54,7 @@ run {
     standardInput = System.in
     args = [ '-a astar -h manhattan | -a astar -h manhattan' ]
 }
+
+test {
+    useJUnitPlatform()
+}
