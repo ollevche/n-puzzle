@@ -31,12 +31,25 @@ class Executor {
 	 * @see Algorithm#execute(State)
 	 */
 	private static Output executeGreedy(State initial) {
-		return Output.create(0,0,Collections.emptyList());
+		int maxNumberOfStates = 0;
+		Set<State> closedSet = new HashSet<>();
+		Set<State> children;
+		State current = initial;
+
+		while (current.isNotFinal()) {
+			closedSet.add(current);
+			children = current.createChildren();
+			children.removeAll(closedSet);
+			current = Collections.min(children);
+			if (closedSet.size() > maxNumberOfStates)
+				maxNumberOfStates = closedSet.size();
+		}
+
+		return Output.create(0, maxNumberOfStates, current.collectPath());
 	}
 
-//	TODO: see if maxNumberOfStates is logically correct
 	private static Output executeAstar(State initial) {
-		int everInOpenSet = 1, maxNumberOfStates = 1;
+		int everInOpenSet = 1, maxNumberOfStates = 0, currentNumberOfStates = 0;
 		Set<State> closedSet = new HashSet<>();
 		Set<State> openSet = new HashSet<>();
 		Set<State> children;
@@ -46,13 +59,14 @@ class Executor {
 			closedSet.add(current);
 			openSet.remove(current);
 			children = current.createChildren();
-			maxNumberOfStates += children.size();
 			children.removeAll(closedSet);
 			openSet.addAll(children);
 			everInOpenSet += children.size();
-			if (openSet.isEmpty())
-				break;
+			if (openSet.isEmpty()) break;
 			current = Collections.min(openSet);
+			currentNumberOfStates = openSet.size() + closedSet.size();
+			if (currentNumberOfStates > maxNumberOfStates)
+				maxNumberOfStates = currentNumberOfStates;
 			if ( openSet.size() >= 2000 ) {
 				List<State> t = new ArrayList<>(openSet);
 				t.sort(Comparator.naturalOrder());
@@ -63,9 +77,8 @@ class Executor {
 		return Output.create(everInOpenSet, maxNumberOfStates, current.collectPath());
 	}
 
-//	TODO: maybe fix the fact that these are almost identical??
 	private static Output executeUniform(State initial) {
-		int everInOpenSet = 1, maxNumberOfStates = 1;
+		int everInOpenSet = 1, maxNumberOfStates = 0, currentNumberOfStates = 0;
 		Set<State> closedSet = new HashSet<>();
 		Set<State> openSet = new HashSet<>();
 		Set<State> children;
@@ -75,13 +88,14 @@ class Executor {
 			closedSet.add(current);
 			openSet.remove(current);
 			children = current.createChildren();
-			maxNumberOfStates += children.size();
 			children.removeAll(closedSet);
 			openSet.addAll(children);
 			everInOpenSet += children.size();
-			if (openSet.isEmpty())
-				break;
+			if (openSet.isEmpty()) break;
 			current = Collections.min(openSet);
+			currentNumberOfStates = openSet.size() + closedSet.size();
+			if (currentNumberOfStates > maxNumberOfStates)
+				maxNumberOfStates = currentNumberOfStates;
 		}
 
 		return Output.create(everInOpenSet, maxNumberOfStates, current.collectPath());

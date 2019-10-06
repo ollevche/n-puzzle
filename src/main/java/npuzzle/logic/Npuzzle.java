@@ -31,7 +31,7 @@ public class Npuzzle implements Callable<Output> {
 		Executor.Algorithm executor = Objects.requireNonNull(Executor.getAlgorithm(input.getAlgorithm()));
 		output = executor.execute(initial);
 		output.setStopwatch(stopwatch.stop()).setInput(input);
-		Writer.write(input, output, true);
+		Writer.write(input, output, false);
 		return output;
 	}
 

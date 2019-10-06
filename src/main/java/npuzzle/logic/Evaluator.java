@@ -44,7 +44,7 @@ class Evaluator {
 			x = index / n;
 			y = index % n;
 			correctTile = xyList.get(tiles.get(index));
-			stateEval += Math.sqrt(Math.pow(x - correctTile.getKey(), 2) + Math.pow(y - correctTile.getValue(), 2));
+			stateEval += Math.pow(x - correctTile.getKey(), 2) + Math.pow(y - correctTile.getValue(), 2);
 		}
 		return stateEval;
 	}

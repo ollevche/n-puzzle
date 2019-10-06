@@ -152,7 +152,7 @@ public class State implements Comparable<State> {
 	}
 
 	@Override public String toString() {
-		return tiles.toString() + " | evaluation: " + evaluation;
+		return tiles.toString();
 	}
 
 	public List<Integer> getTiles() {
