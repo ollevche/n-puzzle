@@ -25,13 +25,10 @@ class TestUtils {
         throw new AssertionError();
     }
 
-    private static final State finalOfThree = State.createFrom(Arrays.asList(1, 2, 3, 8, 0, 4, 7, 6, 5), "");
-    private static final State finalOfFour = State.createFrom(Arrays.asList(1, 2, 3, 4, 12, 13, 14, 5, 11, 0, 15, 6, 10, 9, 8, 7), "");
-    private static final State finalOfFive = State.createFrom(Arrays.asList(1, 2, 3, 4, 5, 16, 17, 18, 19, 6, 15, 24, 0, 20, 7, 14, 23, 22, 21, 8, 13, 12, 11, 10, 9), "");
     private static final Map<Integer, State> finals = new HashMap<Integer, State>() {{
-        put(3, finalOfThree);
-        put(4, finalOfFour);
-        put(5, finalOfFive);
+        put(3, State.createFinal(3));
+        put(4, State.createFinal(4));
+        put(5, State.createFinal(5));
     }};
 
     static void testManual(List<Integer> tiles, String a, String h) {
@@ -117,12 +114,9 @@ class TestUtils {
     }
 
     private static JSONObject createLogJson(Input input, String reason) {
-        JSONObject o = new JSONObject();
-        return o.put("a", input.getAlgorithm())
-                .put("n", input.getN())
-                .put("h", input.getHeuristic())
-                .put("initial", input.getInitialState())
-                .put("message", reason);
+        return new JSONObject().put("a", input.getAlgorithm()).put("n", input.getN())
+                                .put("h", input.getHeuristic()).put("initial", input.getInitialState())
+                                .put("message", reason);
     }
 
 }
