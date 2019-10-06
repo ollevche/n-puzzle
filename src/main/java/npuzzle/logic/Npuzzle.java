@@ -29,7 +29,6 @@ public class Npuzzle implements Callable<Output> {
 		State initial = input.getInitialState();
 		Evaluator.addReferenceList(initial.getN());
 		Executor.Algorithm executor = Objects.requireNonNull(Executor.getAlgorithm(input.getAlgorithm()));
-		System.out.println(this); // TODO: remove
 		output = executor.execute(initial);
 		output.setStopwatch(stopwatch.stop()).setInput(input);
 		Writer.write(input, output, true);
