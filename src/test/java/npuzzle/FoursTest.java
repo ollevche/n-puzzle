@@ -9,7 +9,7 @@ import static npuzzle.utils.Constants.*;
 
 class FoursTest {
 
-	@Disabled("greedy not implemented")
+
 	@Test void manhattanGreedy() {
 		testRandom(3,4, GREEDY, MANHATTAN, 1);
 	}
@@ -22,7 +22,7 @@ class FoursTest {
 		testRandom(1,4, ASTAR, MANHATTAN, 5);
 	}
 
-	@Disabled("greedy not implemented")
+
 	@Test void euclideanGreedy() {
 		testRandom(3,4, GREEDY, EUCLIDEAN, 1);
 	}
@@ -35,7 +35,7 @@ class FoursTest {
 		testRandom(3,4, ASTAR, EUCLIDEAN, 5);
 	}
 
-	@Disabled("greedy not implemented")
+
 	@Test void hammingGreedy() {
 		testRandom(3,4, GREEDY, HAMMING, 1);
 	}
@@ -48,7 +48,7 @@ class FoursTest {
 		testRandom(3,4, ASTAR, HAMMING, 5);
 	}
 
-	@Disabled("greedy not implemented")
+
 	@Test void manhattanGreedyFile() {
 		testFromFile("src/test/resources/testCases/fours/simple.txt", GREEDY, MANHATTAN, 1);
 		testFromFile("src/test/resources/testCases/fours/medium.txt", GREEDY, MANHATTAN, 1);
@@ -67,7 +67,7 @@ class FoursTest {
 		testFromFile("src/test/resources/testCases/fours/hard.txt", ASTAR, MANHATTAN, 4);
 	}
 
-	@Disabled("greedy not implemented")
+
 	@Test void euclideanGreedyFile() {
 		testFromFile("src/test/resources/testCases/fours/simple.txt", GREEDY, EUCLIDEAN, 1);
 		testFromFile("src/test/resources/testCases/fours/medium.txt", GREEDY, EUCLIDEAN, 1);
@@ -86,7 +86,7 @@ class FoursTest {
 		testFromFile("src/test/resources/testCases/fours/hard.txt", ASTAR, EUCLIDEAN, 1);
 	}
 
-	@Disabled("greedy not implemented")
+
 	@Test void hammingGreedyFile() {
 		testFromFile("src/test/resources/testCases/fours/simple.txt", GREEDY, HAMMING, 1);
 		testFromFile("src/test/resources/testCases/fours/medium.txt", GREEDY, HAMMING, 1);

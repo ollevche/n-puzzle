@@ -10,9 +10,10 @@ public enum Error {
 	NON_NUMERIC("Invalid Input: cannot contain non-numerals. String: "),
 	RANDOM_TOO_SMALL("Invalid Input: cannot generate puzzle with n = "),
 	ARG_NOT_FOUND("Invalid input: argument not found: "),
-	UNSOLVABLE("Invalid input: unsolvable puzzle");
+	UNSOLVABLE("Invalid input: unsolvable puzzle"),
+	INCOMPATIBLE_HEURISTIC("Invalid input: incompatible heuristic");
 
-	private final String errorMsg;
+    private final String errorMsg;
 
 	Error(String errorMsg) {
 		this.errorMsg = errorMsg;

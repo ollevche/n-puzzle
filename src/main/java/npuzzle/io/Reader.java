@@ -56,6 +56,8 @@ public class Reader {
                 } else return false;
             }
             parseArgs(input.getArgs());
+            if (input.getAlgorithm().equals(UNIFORM) && !input.getHeuristic().isEmpty())
+                throw new InvalidInputException(Error.INCOMPATIBLE_HEURISTIC);
             if (!input.isRandom())
                 readTiles();
             input.setInitialState(State.createFrom(input.getTiles(), input.getHeuristic()));
@@ -255,7 +257,7 @@ public class Reader {
                     algorithm = ASTAR;
                     break;
                 default:
-                    throw new InvalidInputException(Error.ARG_NOT_FOUND, undef);
+                    throw new InvalidInputException(Error.ARG_NOT_FOUND, ALGORITHM);
             }
 
             input.setAlgorithm(algorithm);
@@ -280,7 +282,7 @@ public class Reader {
             }
 
             if (heuristic.isEmpty() && !input.getAlgorithm().equals(UNIFORM))
-                throw new InvalidInputException(Error.ARG_NOT_FOUND, undef);
+                throw new InvalidInputException(Error.ARG_NOT_FOUND, HEURISTIC);
 
             input.setHeuristic(heuristic);
         }
