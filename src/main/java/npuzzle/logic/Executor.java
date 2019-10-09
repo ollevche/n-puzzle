@@ -103,14 +103,10 @@ class Executor {
 
 	static Algorithm getAlgorithm(String algorithm) {
 		switch (algorithm) {
-			case ASTAR:
-				return Executor::executeAstar;
-			case GREEDY:
-				return Executor::executeGreedy;
-			case UNIFORM:
-				return Executor::executeUniform;
-			default:
-				return null;
+			case ASTAR : return Executor::executeAstar;
+			case GREEDY : return Executor::executeGreedy;
+			case UNIFORM : return Executor::executeUniform;
+			default : return null;
 		}
 	}
 

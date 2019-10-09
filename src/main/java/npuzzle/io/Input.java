@@ -81,9 +81,8 @@ public class Input {
 		isRandom = true;
 		int nByN = n * n;
 
-		tiles = new ArrayList<>(nByN);
-		while (--nByN >= 0)
-			tiles.add(nByN);
+		this.tiles = new ArrayList<>(nByN);
+		while (--nByN >= 0) tiles.add(nByN);
 
 		do Collections.shuffle(tiles);
 			while (State.createFrom(tiles, MANHATTAN).isNotSolvable());

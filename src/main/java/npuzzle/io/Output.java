@@ -32,6 +32,10 @@ public class Output {
 		return maxNumberOfSates;
 	}
 
+	public Input getInput() {
+		return input;
+	}
+
 	List<State> getPath() {
 		return path;
 	}
@@ -54,9 +58,5 @@ public class Output {
 
 	public void setInput(Input input) {
 		this.input = input;
-	}
-
-	public Input getInput() {
-		return input;
 	}
 }

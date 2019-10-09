@@ -21,7 +21,7 @@ import java.util.Objects;
 // TODO: refactor
 public class Writer {
 
-	public synchronized static void write(Input input, Output output, boolean fast, boolean toFile) {
+	public synchronized static void writeToFile(Input input, Output output, boolean fast) {
 		write(input, output, fast, Integer.toString(input.hashCode()));
 	}
 
@@ -30,15 +30,12 @@ public class Writer {
 			System.out.println(input);
 			write(output.getPath(), fast, null);
 			System.out.println(output);
-		} else
-			try {
+		} else try {
 				Path p = Paths.get(filename);
 				Files.write(p, (input.toString() + "\n").getBytes());
 				write(output.getPath(), fast, filename);
 				Files.write(p, output.toString().getBytes(), StandardOpenOption.APPEND);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			} catch (IOException e) { e.printStackTrace(); }
 	}
 
 	public synchronized static void write(Input input, Output output, boolean fast) {
@@ -51,13 +48,9 @@ public class Writer {
 
 	public synchronized static void write(List<State> states, boolean fast, String filename) {
 		try {
-			if (fast)
-				writeFast(states, filename);
-			else
-				writeSlow(states, filename);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+			if (fast) writeFast(states, filename);
+			else writeSlow(states, filename);
+		} catch (IOException e) { e.printStackTrace(); }
 	}
 
 	public synchronized static void write(State state) {
@@ -97,9 +90,9 @@ public class Writer {
 
 		for (Integer tile : state.getTiles()) {
 			rows.append(String.format("%5s", String.valueOf(tile)));
-			if (++col < state.getN()) {
+			if (++col < state.getN())
 				rows.append(" ");
-			} else {
+			else {
 				rows.append("\n");
 				col = 0;
 			}
@@ -117,15 +110,10 @@ public class Writer {
 				List<String> all = Files.readAllLines(path);
 				all.add(s);
 				Collections.swap(all, all.size() - 1, all.size() - 2);
-				String ss = String.join("", all)
-						.replaceAll("\\s+|\\[|]", "")
-						.replace("}{", "},{");
-
+				String ss = String.join("", all).replaceAll("\\s+|\\[|]", "").replace("}{", "},{");
 				Files.write(path, ("["+ss+"]").getBytes());
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		} catch (IOException e) { e.printStackTrace(); }
 	}
 
 }

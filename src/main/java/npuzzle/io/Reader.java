@@ -103,7 +103,6 @@ public class Reader {
                 }
             }
         }
-
     }
 
     private void readFromStdIn() throws IOException {
@@ -124,8 +123,7 @@ public class Reader {
     }
 
     private void finalCheck() {
-        if (validator.n == 0)
-            throw new InvalidInputException(Error.NO_SIZE);
+        if (validator.n == 0) throw new InvalidInputException(Error.NO_SIZE);
         validator.checkEnoughTiles();
         validator.saveValidatedTiles(input);
 
@@ -135,7 +133,7 @@ public class Reader {
 
     public static List<Input> splitArgs(String[] args) {
         List<Input> inputList = new ArrayList<>();
-        List<String> argParts = Arrays.asList(StringUtils.join(args, " ").split("\\|"));
+        String[] argParts = StringUtils.join(args, " ").split("\\|");
 
         for (String arg : argParts)
             inputList.add(Input.fromArgs(arg.trim().split(" ")));
@@ -188,8 +186,7 @@ public class Reader {
         void checkEnoughTiles() {
             int diff = (int) Math.pow(n, 2) - tiles.size();
 
-            if (diff != 0)
-                throw new InvalidInputException(Error.NOT_ENOUGH_TILES, String.valueOf(diff));
+            if (diff != 0) throw new InvalidInputException(Error.NOT_ENOUGH_TILES, String.valueOf(diff));
         }
 
         boolean trySetN(List<Integer> intValues) {
@@ -197,8 +194,7 @@ public class Reader {
                 if (intValues.size() == 1) {
                     n = intValues.get(NO_TILE);
                     return isNSet = true;
-                } else
-                    throw new InvalidInputException(Error.NO_SIZE);
+                } else throw new InvalidInputException(Error.NO_SIZE);
             }
             return false;
         }
@@ -236,7 +232,7 @@ public class Reader {
             if (!undef.matches("\\d+"))
                 throw new InvalidInputException(Error.NON_NUMERIC, undef);
 
-            int randomN = Integer.valueOf(undef);
+            int randomN = Integer.parseInt(undef);
             if (randomN < 2)
                 throw new InvalidInputException(Error.RANDOM_TOO_SMALL, undef);
 
@@ -247,19 +243,14 @@ public class Reader {
             String algorithm;
 
             switch (undef.trim().toLowerCase()) {
-                case GREEDY:
-                    algorithm = GREEDY;
+                case GREEDY : algorithm = GREEDY;
                     break;
-                case UNIFORM:
-                    algorithm = UNIFORM;
+                case UNIFORM : algorithm = UNIFORM;
                     break;
-                case ASTAR:
-                    algorithm = ASTAR;
+                case ASTAR : algorithm = ASTAR;
                     break;
-                default:
-                    throw new InvalidInputException(Error.ARG_NOT_FOUND, ALGORITHM);
+                default : throw new InvalidInputException(Error.ARG_NOT_FOUND, ALGORITHM);
             }
-
             input.setAlgorithm(algorithm);
         }
 
@@ -268,17 +259,13 @@ public class Reader {
             undef = undef == null ? "" : undef;
 
             switch (undef.trim().toLowerCase()) {
-                case MANHATTAN:
-                    heuristic = MANHATTAN;
+                case MANHATTAN : heuristic = MANHATTAN;
                     break;
-                case HAMMING:
-                    heuristic = HAMMING;
+                case HAMMING : heuristic = HAMMING;
                     break;
-                case EUCLIDEAN:
-                    heuristic = EUCLIDEAN;
+                case EUCLIDEAN : heuristic = EUCLIDEAN;
                     break;
-                default:
-                    heuristic = StringUtils.EMPTY;
+                default : heuristic = StringUtils.EMPTY;
             }
 
             if (heuristic.isEmpty() && !input.getAlgorithm().equals(UNIFORM))

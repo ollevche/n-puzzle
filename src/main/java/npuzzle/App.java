@@ -14,9 +14,7 @@ public class App {
 		List<Input> inputList = Reader.splitArgs(args);
 		ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(inputList.size());
 
-		for (Input input : inputList)
-			executor.submit(Npuzzle.create(input));
-
+		for (Input input : inputList) executor.submit(Npuzzle.create(input));
 		executor.shutdown();
 	}
 

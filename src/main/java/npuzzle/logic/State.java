@@ -36,20 +36,15 @@ public class State implements Comparable<State> {
         int min = 0, max = n - 1;
         while (tileNum < capacity) {
         	// from left to right
-            for (int j = min; j < max; j++)
-                setTile.accept(min * n + j, tileNum++);
+            for (int j = min; j < max; j++) setTile.accept(min * n + j, tileNum++);
             // from top to bottom
-            for (int i = min; i < max; i++)
-				setTile.accept(i * n + max, tileNum++);
+            for (int i = min; i < max; i++) setTile.accept(i * n + max, tileNum++);
             // from right to left
-            for (int j = max; j > min; j--)
-				setTile.accept(max * n + j, tileNum++);
+            for (int j = max; j > min; j--) setTile.accept(max * n + j, tileNum++);
             // from bottom to top
-            for (int i = max; i > min; i--)
-				setTile.accept(i * n + min, tileNum++);
+            for (int i = max; i > min; i--) setTile.accept(i * n + min, tileNum++);
 
-			min++;
-			max--;
+			min++; max--;
 		}
 
 		return new State(tiles, "none");

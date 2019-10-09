@@ -23,8 +23,7 @@ public class Npuzzle implements Callable<Output> {
 	public Output call() {
 		Stopwatch stopwatch = Stopwatch.createStarted();
 
-		if (!Reader.createWith(input).fillInput())
-			return null;
+		if (!Reader.createWith(input).fillInput()) return null;
 
 		State initial = input.getInitialState();
 		Evaluator.addReferenceList(initial.getN());
