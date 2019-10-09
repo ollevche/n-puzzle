@@ -9,7 +9,7 @@
 plugins {
     // Apply the java plugin to add support for Java
     id 'java'
-
+    id 'idea'
     // Apply the application plugin to add support for building an application
     id 'application'
 }
@@ -25,8 +25,36 @@ dependencies {
     implementation 'com.google.guava:guava:27.0.1-jre'
 
     // Use JUnit test framework
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-collections4
+    compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.3'
+
+    // https://mvnrepository.com/artifact/com.google.guava/guava
+    compile group: 'com.google.guava', name: 'guava', version: '28.0-jre'
+
+    // https://mvnrepository.com/artifact/commons-cli/commons-cli
+    compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
+
+    // https://mvnrepository.com/artifact/org.json/json
+    compile group: 'org.json', name: 'json', version: '20190722'
+
+
 }
 
 // Define the main class for the application
 mainClassName = 'npuzzle.App'
+// Application Args
+run {
+    standardInput = System.in
+    args = [ '-a astar -h manhattan -r 3' ]
+}
+
+test {
+    useJUnitPlatform()
+}
