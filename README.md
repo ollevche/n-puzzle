@@ -12,7 +12,7 @@ You can choose between Manhattan, Hamming or Euclidean admissable heuristics.
  * -h \<heuristic\> - required for astar and greedy; forbidden for uniform
  * -r \<N\> - optional; will genereate a N*N solvable puzzle
  * -f \<file path\> - optional; will read the input from file
- *   | - optional; repeatable; gives the possibility to enter args again; will another solver run in a separate thread;
+ *   | - optional; repeatable; gives the possibility to enter args again; will run another solver in a separate thread;
      * so ```['-a astar -h manhattan -r 3 | -a astar -h euclidean -r 4']``` will solve two puzzles in parallel
  
  #### If no argument for the input source is provided, you will be promted to manually enter input in the following format:
