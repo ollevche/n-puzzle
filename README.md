@@ -5,7 +5,9 @@ You can choose between Manhattan, Hamming or Euclidean admissable heuristics.
 ## How to use
 
  Run using the gradle wrapper
- ./gradlew run
+
+  ```./gradlew run```
+  
  This will build the app; generate a random 3x3 puzzle (8-puzzle) and solve it using A* and Manhattan heuristic.
  Program args can be modified in the build.gradle:
  * -a \<algorithm\> - one of the three algorithms
