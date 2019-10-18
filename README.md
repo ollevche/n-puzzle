@@ -31,3 +31,7 @@ You can choose between Manhattan, Hamming or Euclidean admissable heuristics.
  8 0 4
  7 6 5
  ```
+
+## How to test
+
+You can run all the tests using ``` ./gradlew test ``` or individual tests using ```./gradlew test --tests <test Class/Method>```
