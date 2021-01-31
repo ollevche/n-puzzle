@@ -1,4 +1,4 @@
-# N-puzzle
+# :1234: N-puzzle
 Solver of an N-Puzzle that uses a modified version of A*, Greedy and Uniform Cost search algorithms.
 You can choose between Manhattan, Hamming or Euclidean admissable heuristics.
 
